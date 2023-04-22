@@ -1,16 +1,22 @@
 import pygame
-import pygame_menu
+from character import Character
 
 WIDTH, HEIGHT, = 1200, 800
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Game")
 FPS = 60
+
 BACKGROUND_SIZE = (3000, 2000)
 background = pygame.image.load("assets/map/map.png").convert()
 BACKGROUND = pygame.transform.scale(background, BACKGROUND_SIZE)
+
 CAM_SPEED = 20
 cam_pos_x = 0
 cam_pos_y = 0
+
+player_pos_x = 0
+player_pos_y = 0
+
 pygame.init()
 
 
@@ -36,15 +42,21 @@ def camera_moves():
 def main():
     clock = pygame.time.Clock()
     run = True
+    player = Character("knight")
+    sprite_group = pygame.sprite.Group()
+    sprite_group.add(player)
     while run:
         clock.tick(FPS)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
             #
+        sprite_group.update()
         camera_moves()
-        print(f'{cam_pos_x} +" " +{cam_pos_y}')
         draw_window()
+        sprite_group.draw(WIN)
+
+        pygame.display.flip()
 
     pygame.quit()
 
