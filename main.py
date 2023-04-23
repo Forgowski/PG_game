@@ -1,21 +1,5 @@
-import pygame
+from settings import *
 from character import Character
-
-WIDTH, HEIGHT, = 1200, 800
-WIN = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Game")
-FPS = 60
-
-BACKGROUND_SIZE = (3000, 2000)
-background = pygame.image.load("assets/map/map.png").convert()
-BACKGROUND = pygame.transform.scale(background, BACKGROUND_SIZE)
-
-CAM_SPEED = 20
-cam_pos_x = 0
-cam_pos_y = 0
-
-player_pos_x = 0
-player_pos_y = 0
 
 pygame.init()
 
@@ -25,26 +9,61 @@ def draw_window():
     pygame.display.update()
 
 
-def camera_moves():
+def camera_moves(direction):
     global cam_pos_y
     global cam_pos_x
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_UP] and cam_pos_y + CAM_SPEED <= 0:
+    if direction == "up" and cam_pos_y + CAM_SPEED <= 0:
         cam_pos_y += CAM_SPEED
-    if keys[pygame.K_DOWN] and cam_pos_y - CAM_SPEED - HEIGHT >= -BACKGROUND_SIZE[1]:
+
+    if direction == "down" and cam_pos_y - CAM_SPEED - HEIGHT >= -BACKGROUND_SIZE[1]:
         cam_pos_y -= CAM_SPEED
-    if keys[pygame.K_RIGHT] and cam_pos_x - CAM_SPEED - WIDTH >= -BACKGROUND_SIZE[0]:
+
+    if direction == "right" and cam_pos_x - CAM_SPEED - WIDTH >= -BACKGROUND_SIZE[0]:
         cam_pos_x -= CAM_SPEED
-    if keys[pygame.K_LEFT] and cam_pos_x + CAM_SPEED <= 0:
+
+    if direction == "left" and cam_pos_x + CAM_SPEED <= 0:
         cam_pos_x += CAM_SPEED
+
+
+def player_moves(player_pos_x, player_pos_y):
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_UP] and player_pos_y - CAM_SPEED >= 0:
+        player_pos_y -= CAM_SPEED
+
+    if player_pos_y < CAM_MARGIN and keys[pygame.K_UP]:
+        camera_moves("up")
+
+    if keys[pygame.K_DOWN] and player_pos_y + CAM_SPEED + CHARACTER_HEIGHT <= HEIGHT:
+        player_pos_y += CAM_SPEED
+
+    if player_pos_y > HEIGHT - CAM_MARGIN and keys[pygame.K_DOWN]:
+        camera_moves("down")
+
+    if keys[pygame.K_RIGHT] and player_pos_x + CAM_SPEED + CHARACTER_WIDTH <= WIDTH:
+        player_pos_x += CAM_SPEED
+
+    if player_pos_x > WIDTH - CAM_MARGIN and keys[pygame.K_RIGHT]:
+        camera_moves("right")
+
+    if keys[pygame.K_LEFT] and player_pos_x - CAM_SPEED >= 0:
+        player_pos_x -= CAM_SPEED
+
+    if player_pos_x < CAM_MARGIN and keys[pygame.K_LEFT]:
+        camera_moves("left")
+
+    return player_pos_x, player_pos_y
 
 
 def main():
     clock = pygame.time.Clock()
     run = True
+
     player = Character("knight")
     sprite_group = pygame.sprite.Group()
     sprite_group.add(player)
+
+    player_pos_x = 0
+    player_pos_y = 0
     while run:
         clock.tick(FPS)
         for event in pygame.event.get():
@@ -52,11 +71,13 @@ def main():
                 run = False
             #
         sprite_group.update()
-        camera_moves()
+
+        player_pos_x, player_pos_y = player_moves(player_pos_x, player_pos_y)
+        player.change_position(player_pos_x, player_pos_y)
+
         draw_window()
         sprite_group.draw(WIN)
-
-        pygame.display.flip()
+        pygame.display.update()
 
     pygame.quit()
 
