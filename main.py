@@ -53,6 +53,8 @@ def player_moves(player_pos_x, player_pos_y):
 
     return player_pos_x, player_pos_y
 
+# def check_map_colision(player_pos_x, player_pos_y):
+#     if
 
 def main():
     clock = pygame.time.Clock()
