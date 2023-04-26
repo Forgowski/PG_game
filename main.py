@@ -28,37 +28,42 @@ def camera_moves(direction):
 def player_moves(player_pos_x, player_pos_y):
     keys = pygame.key.get_pressed()
     if keys[pygame.K_UP] and player_pos_y - CAM_SPEED >= 0:
-        if not check_map_collision(player_pos_x, player_pos_y - CAM_SPEED*):
+        if not check_map_collision(player_pos_x, player_pos_y - CAM_SPEED):
             player_pos_y -= CAM_SPEED
 
     if player_pos_y < CAM_MARGIN and keys[pygame.K_UP]:
-        camera_moves("up")
+        if not check_map_collision(player_pos_x, player_pos_y - CAM_SPEED):
+            camera_moves("up")
 
     if keys[pygame.K_DOWN] and player_pos_y + CAM_SPEED + CHARACTER_HEIGHT <= HEIGHT:
         if not check_map_collision(player_pos_x, player_pos_y + CAM_SPEED):
             player_pos_y += CAM_SPEED
 
     if player_pos_y > HEIGHT - CAM_MARGIN and keys[pygame.K_DOWN]:
-        camera_moves("down")
+        if not check_map_collision(player_pos_x, player_pos_y + CAM_SPEED):
+            camera_moves("down")
 
     if keys[pygame.K_RIGHT] and player_pos_x + CAM_SPEED + CHARACTER_WIDTH <= WIDTH:
         if not check_map_collision(player_pos_x + CAM_SPEED, player_pos_y):
             player_pos_x += CAM_SPEED
 
     if player_pos_x > WIDTH - CAM_MARGIN and keys[pygame.K_RIGHT]:
-        camera_moves("right")
+        if not check_map_collision(player_pos_x + CAM_SPEED, player_pos_y):
+            camera_moves("right")
 
     if keys[pygame.K_LEFT] and player_pos_x - CAM_SPEED >= 0:
         if not check_map_collision(player_pos_x - CAM_SPEED, player_pos_y):
             player_pos_x -= CAM_SPEED
 
     if player_pos_x < CAM_MARGIN and keys[pygame.K_LEFT]:
-        camera_moves("left")
+        if not check_map_collision(player_pos_x - CAM_SPEED, player_pos_y):
+            camera_moves("left")
 
     return player_pos_x, player_pos_y
 
 
 def check_map_collision(player_pos_x, player_pos_y):
+    print(cam_pos_x, " ", cam_pos_y)
     x = int((player_pos_x - cam_pos_x) / TILE_SIZE)
     y = int((player_pos_y - cam_pos_y) / TILE_SIZE)
     if map_array[x, y]:
@@ -86,7 +91,7 @@ def main():
         player_pos_x, player_pos_y = player_moves(player_pos_x, player_pos_y)
         player.change_position(player_pos_x, player_pos_y)
 
-        print(cam_pos_x, " ", cam_pos_y)
+
         draw_window()
         sprite_group.draw(WIN)
         pygame.display.update()
