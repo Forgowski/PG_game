@@ -12,7 +12,7 @@ BACKGROUND_SIZE = (BACKGROUND_X, BACKGROUND_Y)
 background = pygame.image.load("assets/map/map.png").convert()
 BACKGROUND = pygame.transform.scale(background, BACKGROUND_SIZE)
 
-TILE_SIZE = BACKGROUND_X / (16 * 60)
+TILE_SIZE = BACKGROUND_X / 60
 
 CHARACTER_HEIGHT = 30
 CHARACTER_WIDTH = 20
@@ -28,4 +28,3 @@ for i in range(24, 31):
     for j in range(15):
         map_array[i][j] = 1
 
-print(map_array)
