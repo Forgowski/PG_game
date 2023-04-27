@@ -36,7 +36,7 @@ class Character(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = 0
         self.rect.y = 0
-        self.make_slower = 6
+        self.make_slower = 4
         self.counter = 0
 
     def update(self):

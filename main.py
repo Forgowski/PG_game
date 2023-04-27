@@ -4,14 +4,20 @@ from character import Character
 pygame.init()
 
 
-def draw_window():
+def draw_window(sprite_group, walk_or_not):
+    if walk_or_not:
+        sprite_group.update()
+    else:
+        sprite_group.sprites()[0].image = sprite_group.sprites()[0].images[0]
     WIN.blit(BACKGROUND, (cam_pos_x, cam_pos_y))
+    sprite_group.draw(WIN)
     pygame.display.update()
 
 
 def camera_moves(direction):
     global cam_pos_y
     global cam_pos_x
+
     if direction == "up" and cam_pos_y + CAM_SPEED <= 0:
         cam_pos_y += CAM_SPEED
 
@@ -63,38 +69,44 @@ def player_moves(player_pos_x, player_pos_y):
 
 
 def check_map_collision(player_pos_x, player_pos_y):
-    print(cam_pos_x, " ", cam_pos_y)
     x = int((player_pos_x - cam_pos_x) / TILE_SIZE)
     y = int((player_pos_y - cam_pos_y) / TILE_SIZE)
     if map_array[x, y]:
         return True
 
 
+def is_player_moved(player_pos_x, player_pos_y, prev_player_pos_x, prev_player_pos_y):
+    return player_pos_x != prev_player_pos_x or player_pos_y != prev_player_pos_y
+
+
 def main():
     clock = pygame.time.Clock()
     run = True
 
-    player = Character("knight")
+    player = Character("knigh")
     sprite_group = pygame.sprite.Group()
     sprite_group.add(player)
 
     player_pos_x = 0
     player_pos_y = 0
+
+    prev_player_pos_x = 0
+    prev_player_pos_y = 0
+
     while run:
         clock.tick(FPS)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
-            #
-        sprite_group.update()
 
         player_pos_x, player_pos_y = player_moves(player_pos_x, player_pos_y)
         player.change_position(player_pos_x, player_pos_y)
 
+        walk_or_not = is_player_moved(player_pos_x, player_pos_y, prev_player_pos_x, prev_player_pos_y)
+        draw_window(sprite_group, walk_or_not)
 
-        draw_window()
-        sprite_group.draw(WIN)
-        pygame.display.update()
+        prev_player_pos_x = player_pos_x
+        prev_player_pos_y = player_pos_y
 
     pygame.quit()
 
