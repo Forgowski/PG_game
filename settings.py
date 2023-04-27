@@ -18,7 +18,7 @@ CHARACTER_HEIGHT = 30
 CHARACTER_WIDTH = 20
 
 CAM_MARGIN = 60
-CAM_SPEED = 10
+CAM_SPEED = 7
 cam_pos_x = 0
 cam_pos_y = 0
 

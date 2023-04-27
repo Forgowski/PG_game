@@ -68,6 +68,7 @@ def player_moves(player_pos_x, player_pos_y):
     return player_pos_x, player_pos_y
 
 
+# looking for collision with maps object
 def check_map_collision(player_pos_x, player_pos_y):
     x = int((player_pos_x - cam_pos_x) / TILE_SIZE)
     y = int((player_pos_y - cam_pos_y) / TILE_SIZE)
@@ -75,25 +76,29 @@ def check_map_collision(player_pos_x, player_pos_y):
         return True
 
 
-def is_player_moved(player_pos_x, player_pos_y, prev_player_pos_x, prev_player_pos_y):
-    return player_pos_x != prev_player_pos_x or player_pos_y != prev_player_pos_y
+# this will check if we need walk animation
+def is_player_moved(player_pos_x, player_pos_y, prev_player_pos_x, prev_player_pos_y, cam_pos_x,
+                    cam_pos_y, prev_cam_pos_x, prev_cam_pos_y):
+    return player_pos_x != prev_player_pos_x or player_pos_y != prev_player_pos_y or cam_pos_x != prev_cam_pos_x or \
+        cam_pos_y != prev_cam_pos_y
 
 
 def main():
     clock = pygame.time.Clock()
     run = True
 
-    player = Character("knigh")
+    player = Character("knight")
     sprite_group = pygame.sprite.Group()
     sprite_group.add(player)
 
-    player_pos_x = 0
-    player_pos_y = 0
+    player_pos_x, player_pos_y = 0, 0
 
-    prev_player_pos_x = 0
-    prev_player_pos_y = 0
+    prev_player_pos_x, prev_player_pos_y = 0, 0
+
+    prev_cam_pos_x, prev_cam_pos_y = 0, 0
 
     while run:
+
         clock.tick(FPS)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -102,11 +107,12 @@ def main():
         player_pos_x, player_pos_y = player_moves(player_pos_x, player_pos_y)
         player.change_position(player_pos_x, player_pos_y)
 
-        walk_or_not = is_player_moved(player_pos_x, player_pos_y, prev_player_pos_x, prev_player_pos_y)
+        walk_or_not = is_player_moved(player_pos_x, player_pos_y, prev_player_pos_x, prev_player_pos_y, cam_pos_x,
+                                      cam_pos_y, prev_cam_pos_x, prev_cam_pos_y)
         draw_window(sprite_group, walk_or_not)
 
-        prev_player_pos_x = player_pos_x
-        prev_player_pos_y = player_pos_y
+        prev_player_pos_x, prev_player_pos_y = player_pos_x, player_pos_y
+        prev_cam_pos_x, prev_cam_pos_y = cam_pos_x, cam_pos_y
 
     pygame.quit()
 
