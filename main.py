@@ -4,13 +4,13 @@ from character import Character
 pygame.init()
 
 
-def draw_window(sprite_group, walk_or_not):
+def draw_window(player, sprite_group, walk_or_not):
     if walk_or_not:
-        sprite_group.update()
+        player.update()
     else:
-        sprite_group.sprites()[0].image = sprite_group.sprites()[0].images[0]
+        player.image = player.images[3]
     WIN.blit(BACKGROUND, (cam_pos_x, cam_pos_y))
-    sprite_group.draw(WIN)
+    WIN.blit(player.image, (player.rect.x, player.rect.y))
     pygame.display.update()
 
 
@@ -83,13 +83,20 @@ def is_player_moved(player_pos_x, player_pos_y, prev_player_pos_x, prev_player_p
         cam_pos_y != prev_cam_pos_y
 
 
+def is_enemy_collision():
+    pass
+
+
+def draw_fight_scene():
+    pass
+
+
 def main():
     clock = pygame.time.Clock()
     run = True
 
     player = Character("knight")
     sprite_group = pygame.sprite.Group()
-    sprite_group.add(player)
 
     player_pos_x, player_pos_y = 0, 0
 
@@ -109,7 +116,8 @@ def main():
 
         walk_or_not = is_player_moved(player_pos_x, player_pos_y, prev_player_pos_x, prev_player_pos_y, cam_pos_x,
                                       cam_pos_y, prev_cam_pos_x, prev_cam_pos_y)
-        draw_window(sprite_group, walk_or_not)
+
+        draw_window(player, sprite_group, walk_or_not)
 
         prev_player_pos_x, prev_player_pos_y = player_pos_x, player_pos_y
         prev_cam_pos_x, prev_cam_pos_y = cam_pos_x, cam_pos_y
