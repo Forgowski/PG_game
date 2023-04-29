@@ -1,5 +1,7 @@
+import random
+
 from settings import *
-from character import Character
+from character import Character, Enemy
 
 pygame.init()
 
@@ -9,8 +11,10 @@ def draw_window(player, sprite_group, walk_or_not):
         player.update()
     else:
         player.image = player.images[3]
+
     WIN.blit(BACKGROUND, (cam_pos_x, cam_pos_y))
     WIN.blit(player.image, (player.rect.x, player.rect.y))
+    sprite_group.draw(WIN)
     pygame.display.update()
 
 
@@ -91,6 +95,18 @@ def draw_fight_scene():
     pass
 
 
+def enemy_update(sprite_group, cam_pos_x, cam_pos_y, prev_cam_pos_x, prev_cam_pos_y):
+    while len(sprite_group) < OPPONENTS_NUMBER:
+        enemy = Enemy()
+        enemy.change_position(random.randint(0, 3000), random.randint(0, 3000))
+        sprite_group.add(enemy)
+
+    if cam_pos_x != prev_cam_pos_x or cam_pos_y != prev_cam_pos_y:
+        for sprite in sprite_group:
+            sprite.change_position(sprite.rect.x + cam_pos_x - prev_cam_pos_x,
+                                   sprite.rect.y + cam_pos_y - prev_cam_pos_y)
+
+
 def main():
     clock = pygame.time.Clock()
     run = True
@@ -116,6 +132,8 @@ def main():
 
         walk_or_not = is_player_moved(player_pos_x, player_pos_y, prev_player_pos_x, prev_player_pos_y, cam_pos_x,
                                       cam_pos_y, prev_cam_pos_x, prev_cam_pos_y)
+
+        enemy_update(sprite_group, cam_pos_x, cam_pos_y, prev_cam_pos_x, prev_cam_pos_y)
 
         draw_window(player, sprite_group, walk_or_not)
 

@@ -56,8 +56,12 @@ class Enemy(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.images = enemy
-        self.current_image = 5
+        self.current_image = 4
         self.image = self.images[self.current_image]
         self.rect = self.image.get_rect()
         self.rect.x = 0
         self.rect.y = 0
+
+    def change_position(self, x, y):
+        self.rect.x = x
+        self.rect.y = y
