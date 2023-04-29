@@ -1,7 +1,7 @@
 import pygame
 import numpy as np
 
-WIDTH, HEIGHT, = 1200, 800
+WIDTH, HEIGHT, = 1800, 1000
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Game")
 FPS = 60
@@ -20,7 +20,7 @@ CHARACTER_HEIGHT = 30
 CHARACTER_WIDTH = 20
 
 CAM_MARGIN = 60
-CAM_SPEED = 7
+CAM_SPEED = 10
 cam_pos_x = 0
 cam_pos_y = 0
 
@@ -29,4 +29,3 @@ np.set_printoptions(threshold=np.inf)
 for i in range(24, 31):
     for j in range(15):
         map_array[i][j] = 1
-
