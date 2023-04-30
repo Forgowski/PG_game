@@ -1,4 +1,5 @@
 import pygame
+import pyrect
 
 knight = [pygame.image.load("assets/player/knight/knight.png"),
           pygame.image.load("assets/player/knight/knight2.png"),
@@ -30,6 +31,9 @@ class Character(pygame.sprite.Sprite):
             self.images = knight
         else:
             self.images = wizzard
+        self.hp = 100
+        self.hp_bar = pygame.Rect(10, 10, 100, 10)
+        self.hp_background_bar = pygame.Rect(10, 10, 100, 10)
         self.current_image = 0
         self.image = self.images[self.current_image]
         self.rect = self.image.get_rect()
@@ -50,6 +54,9 @@ class Character(pygame.sprite.Sprite):
     def change_position(self, x, y):
         self.rect.x = x
         self.rect.y = y
+
+    def update_hp_bar(self):
+        self.hp_bar.width = self.hp
 
 
 class Enemy(pygame.sprite.Sprite):

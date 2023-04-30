@@ -12,6 +12,9 @@ BACKGROUND_SIZE = (BACKGROUND_X, BACKGROUND_Y)
 background = pygame.image.load("assets/map/map.png").convert()
 BACKGROUND = pygame.transform.scale(background, BACKGROUND_SIZE)
 
+RED = (255, 0, 0)
+CLARET = (150, 0, 100)
+
 TILE_SIZE = BACKGROUND_X / 60
 
 OPPONENTS_NUMBER = 15

@@ -30,6 +30,8 @@ def draw_window(player, sprite_group, walk_or_not):
 
     WIN.blit(BACKGROUND, (cam_pos_x, cam_pos_y))
     WIN.blit(player.image, (player.rect.x, player.rect.y))
+    pygame.draw.rect(WIN, CLARET, player.hp_background_bar)
+    pygame.draw.rect(WIN, RED, player.hp_bar)
     sprite_group.draw(WIN)
     pygame.display.update()
 
@@ -88,6 +90,8 @@ def is_enemy_collision(player, sprites_group):
     for sprite in sprites_group:
         if pygame.sprite.collide_rect(player, sprite):
             sprites_group.remove(sprite)
+            player.hp -= 10
+            player.update_hp_bar()
             return True
     return False
 
@@ -122,7 +126,7 @@ def main():
     player = Character("knight")
     sprite_group = pygame.sprite.Group()
 
-    player_pos_x, player_pos_y = 0, 0
+    player_pos_x, player_pos_y = 50, 50
 
     prev_player_pos_x, prev_player_pos_y = 0, 0
 
@@ -146,7 +150,6 @@ def main():
         draw_window(player, sprite_group, walk_or_not)
 
         is_enemy_collision(player, sprite_group)
-        print(cam_pos_x, cam_pos_y)
         prev_player_pos_x, prev_player_pos_y = player_pos_x, player_pos_y
         prev_cam_pos_x, prev_cam_pos_y = cam_pos_x, cam_pos_y
 
