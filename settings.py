@@ -1,5 +1,6 @@
 import pygame
 import numpy as np
+from pygame import font
 
 WIDTH, HEIGHT, = 1800, 1000
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -29,6 +30,11 @@ CAM_MARGIN = 60
 CAM_SPEED = 10
 cam_pos_x = 0
 cam_pos_y = 0
+
+pygame.font.init()
+my_font = font.SysFont('Arial', 15)
+hp_text = my_font.render('HP', True, (255, 255, 255))
+exp_text = my_font.render('EXP', True, (255, 255, 255))
 
 map_array = np.zeros((60, 40), dtype=int)
 np.set_printoptions(threshold=np.inf)

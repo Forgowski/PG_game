@@ -32,12 +32,12 @@ class Character(pygame.sprite.Sprite):
             self.images = wizzard
         self.lvl = 1
         self.hp = 100
-        self.hp_bar = pygame.Rect(10, 10, 100, 10)
-        self.hp_background_bar = pygame.Rect(10, 10, 100, 10)
+        self.hp_bar = pygame.Rect(30, 10, 100, 15)
+        self.hp_background_bar = pygame.Rect(30, 10, 100, 15)
         self.exp = 0
         self.exp_to_next_level = 100
-        self.exp_bar = pygame.Rect(10, 30, 0, 10)
-        self.exp_background_bar = pygame.Rect(10, 30, 100, 10)
+        self.exp_bar = pygame.Rect(30, 30, 0, 15)
+        self.exp_background_bar = pygame.Rect(30, 30, 100, 15)
         self.current_image = 0
         self.image = self.images[self.current_image]
         self.rect = self.image.get_rect()
@@ -67,10 +67,9 @@ class Character(pygame.sprite.Sprite):
             self.exp_bar.width = 0
             self.lvl += 1
             self.exp = 0
-            self.exp_to_next_level = 100 * 5 * self.lvl
+            self.exp_to_next_level = 100 * 2 * self.lvl
         self.exp += value
-        self.exp_bar.width = int(self.exp/self.exp_to_next_level*100)
-
+        self.exp_bar.width = int(self.exp / self.exp_to_next_level * 100)
 
 
 class Enemy(pygame.sprite.Sprite):

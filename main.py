@@ -6,6 +6,24 @@ from character import Character, Enemy
 pygame.init()
 
 
+def draw_window(player, sprite_group, walk_or_not):
+    if walk_or_not:
+        player.update()
+    else:
+        player.image = player.images[3]
+
+    WIN.blit(BACKGROUND, (cam_pos_x, cam_pos_y))
+    WIN.blit(player.image, (player.rect.x, player.rect.y))
+    WIN.blit(hp_text, (0, 10))
+    WIN.blit(exp_text, (0, 30))
+    pygame.draw.rect(WIN, CLARET, player.hp_background_bar)
+    pygame.draw.rect(WIN, RED, player.hp_bar)
+    pygame.draw.rect(WIN, GOLD_BACKGROUND, player.exp_background_bar)
+    pygame.draw.rect(WIN, GOLD, player.exp_bar)
+    sprite_group.draw(WIN)
+    pygame.display.update()
+
+
 def camera_moves(direction):
     global cam_pos_x, cam_pos_y
 
@@ -20,22 +38,6 @@ def camera_moves(direction):
 
     if direction == "left" and cam_pos_x + CAM_SPEED <= 0:
         cam_pos_x += CAM_SPEED
-
-
-def draw_window(player, sprite_group, walk_or_not):
-    if walk_or_not:
-        player.update()
-    else:
-        player.image = player.images[3]
-
-    WIN.blit(BACKGROUND, (cam_pos_x, cam_pos_y))
-    WIN.blit(player.image, (player.rect.x, player.rect.y))
-    pygame.draw.rect(WIN, CLARET, player.hp_background_bar)
-    pygame.draw.rect(WIN, RED, player.hp_bar)
-    pygame.draw.rect(WIN, GOLD_BACKGROUND, player.exp_background_bar)
-    pygame.draw.rect(WIN, GOLD, player.exp_bar)
-    sprite_group.draw(WIN)
-    pygame.display.update()
 
 
 def player_moves(player_pos_x, player_pos_y):
@@ -92,7 +94,7 @@ def is_enemy_collision(player, sprites_group):
     for sprite in sprites_group:
         if pygame.sprite.collide_rect(player, sprite):
             sprites_group.remove(sprite)
-            player.hp -= 10
+            player.hp -= sprite.attack_power
             player.update_hp_bar()
             player.update_exp_bar(sprite.exp_drop)
             return True
