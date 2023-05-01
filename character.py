@@ -1,5 +1,4 @@
-import pygame
-import pyrect
+from settings import *
 
 knight = [pygame.image.load("assets/player/knight/knight.png"),
           pygame.image.load("assets/player/knight/knight2.png"),
@@ -31,9 +30,14 @@ class Character(pygame.sprite.Sprite):
             self.images = knight
         else:
             self.images = wizzard
+        self.lvl = 1
         self.hp = 100
         self.hp_bar = pygame.Rect(10, 10, 100, 10)
         self.hp_background_bar = pygame.Rect(10, 10, 100, 10)
+        self.exp = 0
+        self.exp_to_next_level = 100
+        self.exp_bar = pygame.Rect(10, 30, 0, 10)
+        self.exp_background_bar = pygame.Rect(10, 30, 100, 10)
         self.current_image = 0
         self.image = self.images[self.current_image]
         self.rect = self.image.get_rect()
@@ -58,12 +62,25 @@ class Character(pygame.sprite.Sprite):
     def update_hp_bar(self):
         self.hp_bar.width = self.hp
 
+    def update_exp_bar(self, value):
+        if self.exp + value >= self.exp_to_next_level:
+            self.exp_bar.width = 0
+            self.lvl += 1
+            self.exp = 0
+            self.exp_to_next_level = 100 * 5 * self.lvl
+        self.exp += value
+        self.exp_bar.width = int(self.exp/self.exp_to_next_level*100)
+
+
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
+        self.hp = opponents_level * 100
+        self.attack_power = opponents_level * 5
         self.images = enemy
         self.current_image = 4
+        self.exp_drop = opponents_level * 20
         self.image = self.images[self.current_image]
         self.rect = (self.image.get_rect())
         self.rect.x = 0
