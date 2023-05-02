@@ -1,4 +1,5 @@
 from settings import *
+from equipment import Equipment
 
 knight = [pygame.image.load("assets/player/knight/knight.png"),
           pygame.image.load("assets/player/knight/knight2.png"),
@@ -36,9 +37,9 @@ wizzard_death = [pygame.image.load("assets/player/wizzard/wizzard_d.png"),
 
 
 class Character(pygame.sprite.Sprite):
-    def __init__(self, player_type):
+    def __init__(self, hero_type):
         super().__init__()
-        if player_type == "knight":
+        if hero_type == "knight":
             self.images = knight
             self.death_images = knight_death
         else:
@@ -68,6 +69,8 @@ class Character(pygame.sprite.Sprite):
         self.make_slower = 6
         self.counter = 0
         self.death_frame_counter = 0
+
+        self.equipment = Equipment(hero_type)
 
     def update(self):
         if self.counter % self.make_slower == 0:

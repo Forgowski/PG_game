@@ -25,7 +25,15 @@ def draw_window(player, sprite_group, walk_or_not, revive_button):
             pygame.draw.rect(WIN, BLACK, revive_button.rectangle)
             WIN.blit(revive_button.rectangle_text, revive_button.rectangle_text_position)
             player.death_animation()
+
     sprite_group.draw(WIN)
+
+    if player.equipment.is_visible:
+        for each in player.equipment.eq_background_rectangles:
+            pygame.draw.rect(WIN, BLACK, each)
+        for each in player.equipment.eq_rectangles:
+            pygame.draw.rect(WIN, BROWN, each)
+
     pygame.display.update()
 
 
@@ -45,8 +53,7 @@ def camera_moves(direction):
         cam_pos_x += CAM_SPEED
 
 
-def player_moves(player_pos_x, player_pos_y):
-    keys = pygame.key.get_pressed()
+def player_control(player_pos_x, player_pos_y, keys):
     if keys[pygame.K_UP] and player_pos_y - CAM_SPEED >= 0:
         if not check_map_collision(player_pos_x, player_pos_y - CAM_SPEED):
             player_pos_y -= CAM_SPEED
@@ -161,9 +168,14 @@ def main():
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_position = pygame.mouse.get_pos()
-                revive_button.is_pressed(mouse_position)
+                if not player.is_alive:
+                    revive_button.is_pressed(mouse_position)
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_e:
+                    player.equipment.change_visibility()
         if player.is_alive:
-            player_pos_x, player_pos_y = player_moves(player_pos_x, player_pos_y)
+            keys = pygame.key.get_pressed()
+            player_pos_x, player_pos_y = player_control(player_pos_x, player_pos_y, keys)
             player.change_position(player_pos_x, player_pos_y)
 
             walk_or_not = is_player_moved(player_pos_x, player_pos_y, prev_player_pos_x, prev_player_pos_y,
