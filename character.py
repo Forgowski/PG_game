@@ -109,6 +109,11 @@ class Character(pygame.sprite.Sprite):
 
         self.death_frame_counter += 1
 
+    def revive(self):
+        self.is_alive = True
+        self.hp = 1
+        self.update_hp_bar(0)
+
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self):

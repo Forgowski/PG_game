@@ -17,6 +17,7 @@ RED = (255, 0, 0)
 CLARET = (150, 0, 100)
 GOLD = (244, 168, 13)
 GOLD_BACKGROUND = (105, 79, 7)
+BLACK = (0, 0, 0)
 
 TILE_SIZE = BACKGROUND_X / 60
 
@@ -33,6 +34,7 @@ cam_pos_y = 0
 
 pygame.font.init()
 my_font = font.SysFont('Arial', 15)
+my_bold_font = font.SysFont('Arial', 15, bold=True)
 hp_text = my_font.render('HP', True, (255, 255, 255))
 exp_text = my_font.render('EXP', True, (255, 255, 255))
 

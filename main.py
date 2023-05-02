@@ -2,18 +2,12 @@ import random
 
 from settings import *
 from character import Character, Enemy
+from button import Button
 
 pygame.init()
 
 
-def draw_window(player, sprite_group, walk_or_not):
-    if walk_or_not:
-        player.update()
-    else:
-        if player.is_alive:
-            player.image = player.images[3]
-        else:
-            player.death_animation()
+def draw_window(player, sprite_group, walk_or_not, revive_button):
     WIN.blit(BACKGROUND, (cam_pos_x, cam_pos_y))
     WIN.blit(player.image, (player.rect.x, player.rect.y))
     WIN.blit(hp_text, (0, 10))
@@ -22,6 +16,15 @@ def draw_window(player, sprite_group, walk_or_not):
     pygame.draw.rect(WIN, RED, player.hp_bar)
     pygame.draw.rect(WIN, GOLD_BACKGROUND, player.exp_background_bar)
     pygame.draw.rect(WIN, GOLD, player.exp_bar)
+    if walk_or_not:
+        player.update()
+    else:
+        if player.is_alive:
+            player.image = player.images[3]
+        else:
+            pygame.draw.rect(WIN, BLACK, revive_button.rectangle)
+            WIN.blit(revive_button.rectangle_text, revive_button.rectangle_text_position)
+            player.death_animation()
     sprite_group.draw(WIN)
     pygame.display.update()
 
@@ -139,12 +142,26 @@ def main():
 
     prev_cam_pos_x, prev_cam_pos_y = 0, 0
 
+    revive_button = Button(100, 45, 30, 50, player.revive, "revive button")
+
+    text_position_x = (revive_button.rectangle.width - (
+        revive_button.rectangle_text.get_width())) / 2 + revive_button.rectangle.x
+
+    text_position_y = (revive_button.rectangle.height - (
+        revive_button.rectangle_text.get_height())) / 2 + revive_button.rectangle.y
+
+    revive_button.rectangle_text_position = (text_position_x, text_position_y)
+
     while run:
 
         clock.tick(FPS)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_position = pygame.mouse.get_pos()
+                revive_button.is_pressed(mouse_position)
         if player.is_alive:
             player_pos_x, player_pos_y = player_moves(player_pos_x, player_pos_y)
             player.change_position(player_pos_x, player_pos_y)
@@ -154,14 +171,13 @@ def main():
 
             enemy_update(sprite_group, prev_cam_pos_x, prev_cam_pos_y)
 
-            draw_window(player, sprite_group, walk_or_not)
+            draw_window(player, sprite_group, walk_or_not, revive_button)
 
             is_enemy_collision(player, sprite_group)
             prev_player_pos_x, prev_player_pos_y = player_pos_x, player_pos_y
             prev_cam_pos_x, prev_cam_pos_y = cam_pos_x, cam_pos_y
         else:
-            draw_window(player, sprite_group, False)
-            clock.tick(FPS)
+            draw_window(player, sprite_group, False, revive_button)
 
     pygame.quit()
 
