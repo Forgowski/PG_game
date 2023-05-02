@@ -10,8 +10,10 @@ def draw_window(player, sprite_group, walk_or_not):
     if walk_or_not:
         player.update()
     else:
-        player.image = player.images[3]
-
+        if player.is_alive:
+            player.image = player.images[3]
+        else:
+            player.death_animation()
     WIN.blit(BACKGROUND, (cam_pos_x, cam_pos_y))
     WIN.blit(player.image, (player.rect.x, player.rect.y))
     WIN.blit(hp_text, (0, 10))
@@ -94,8 +96,8 @@ def is_enemy_collision(player, sprites_group):
     for sprite in sprites_group:
         if pygame.sprite.collide_rect(player, sprite):
             sprites_group.remove(sprite)
-            player.hp -= sprite.attack_power
-            player.update_hp_bar()
+            if player.update_hp_bar(sprite.attack_power):
+                pass
             player.update_exp_bar(sprite.exp_drop)
             return True
     return False
@@ -143,20 +145,23 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
+        if player.is_alive:
+            player_pos_x, player_pos_y = player_moves(player_pos_x, player_pos_y)
+            player.change_position(player_pos_x, player_pos_y)
 
-        player_pos_x, player_pos_y = player_moves(player_pos_x, player_pos_y)
-        player.change_position(player_pos_x, player_pos_y)
+            walk_or_not = is_player_moved(player_pos_x, player_pos_y, prev_player_pos_x, prev_player_pos_y,
+                                          prev_cam_pos_x, prev_cam_pos_y)
 
-        walk_or_not = is_player_moved(player_pos_x, player_pos_y, prev_player_pos_x, prev_player_pos_y, prev_cam_pos_x,
-                                      prev_cam_pos_y)
+            enemy_update(sprite_group, prev_cam_pos_x, prev_cam_pos_y)
 
-        enemy_update(sprite_group, prev_cam_pos_x, prev_cam_pos_y)
+            draw_window(player, sprite_group, walk_or_not)
 
-        draw_window(player, sprite_group, walk_or_not)
-
-        is_enemy_collision(player, sprite_group)
-        prev_player_pos_x, prev_player_pos_y = player_pos_x, player_pos_y
-        prev_cam_pos_x, prev_cam_pos_y = cam_pos_x, cam_pos_y
+            is_enemy_collision(player, sprite_group)
+            prev_player_pos_x, prev_player_pos_y = player_pos_x, player_pos_y
+            prev_cam_pos_x, prev_cam_pos_y = cam_pos_x, cam_pos_y
+        else:
+            draw_window(player, sprite_group, False)
+            clock.tick(FPS)
 
     pygame.quit()
 

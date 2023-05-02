@@ -22,29 +22,52 @@ enemy = [pygame.image.load("assets/player/enemy/enemy.png"),
 
          ]
 
+knight_death = [pygame.image.load("assets/player/knight/knight_d.png"),
+                pygame.image.load("assets/player/knight/knight_d1.png"),
+                pygame.image.load("assets/player/knight/knight_d2.png"),
+                pygame.image.load("assets/player/knight/knight_d3.png"),
+                ]
+
+wizzard_death = [pygame.image.load("assets/player/wizzard/wizzard_d.png"),
+                 pygame.image.load("assets/player/wizzard/wizzard_d1.png"),
+                 pygame.image.load("assets/player/wizzard/wizzard_d2.png"),
+                 pygame.image.load("assets/player/wizzard/wizzard_d3.png"),
+                 ]
+
 
 class Character(pygame.sprite.Sprite):
     def __init__(self, player_type):
         super().__init__()
         if player_type == "knight":
             self.images = knight
+            self.death_images = knight_death
         else:
             self.images = wizzard
+            self.death_images = wizzard_death
+
+        self.is_alive = True
         self.lvl = 1
+
         self.hp = 100
+        self.exp = 0
+
         self.hp_bar = pygame.Rect(30, 10, 100, 15)
         self.hp_background_bar = pygame.Rect(30, 10, 100, 15)
-        self.exp = 0
         self.exp_to_next_level = 100
         self.exp_bar = pygame.Rect(30, 30, 0, 15)
         self.exp_background_bar = pygame.Rect(30, 30, 100, 15)
+
         self.current_image = 0
+        self.current_death_image = 0
         self.image = self.images[self.current_image]
+
         self.rect = self.image.get_rect()
         self.rect.x = 0
         self.rect.y = 0
-        self.make_slower = 4
+
+        self.make_slower = 6
         self.counter = 0
+        self.death_frame_counter = 0
 
     def update(self):
         if self.counter % self.make_slower == 0:
@@ -59,7 +82,14 @@ class Character(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
 
-    def update_hp_bar(self):
+    def update_hp_bar(self, value):
+        if self.hp - value <= 0:
+            self.hp -= value
+            self.hp_bar.width = self.hp
+            self.is_alive = False
+            return True
+
+        self.hp -= value
         self.hp_bar.width = self.hp
 
     def update_exp_bar(self, value):
@@ -71,12 +101,20 @@ class Character(pygame.sprite.Sprite):
         self.exp += value
         self.exp_bar.width = int(self.exp / self.exp_to_next_level * 100)
 
+    def death_animation(self):
+        if self.death_frame_counter % self.make_slower * 4 == 0:
+            self.image = self.death_images[self.current_death_image]
+            if self.current_death_image < len(self.death_images) - 1:
+                self.current_death_image += 1
+
+        self.death_frame_counter += 1
+
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.hp = opponents_level * 100
-        self.attack_power = opponents_level * 5
+        self.attack_power = opponents_level * 20
         self.images = enemy
         self.current_image = 4
         self.exp_drop = opponents_level * 20
