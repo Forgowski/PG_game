@@ -33,6 +33,8 @@ def draw_window(player, sprite_group, walk_or_not, revive_button):
             pygame.draw.rect(WIN, BLACK, each)
         for each in player.equipment.eq_rectangles:
             pygame.draw.rect(WIN, BROWN, each)
+        for each in player.equipment.items:
+            WIN.blit(each.item_image, each.item_position)
 
     pygame.display.update()
 

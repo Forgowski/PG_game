@@ -16,7 +16,7 @@ ITEMS = {"gold": pygame.transform.scale(pygame.image.load("assets/items/gold.png
 
 class Equipment:
     def __init__(self, hero_type):
-        self.items = [ITEMS["gold"]]
+        self.items = []
         self.is_visible = False
         self.image = None
         self.capacity = 6
@@ -31,9 +31,14 @@ class Equipment:
 
             self.eq_rectangles.append(eq_rectangle)
             self.eq_background_rectangles.append(eq_background_rectangle)
+        self.add_item("gold", False)
 
-    def add_item(self):
-        pass
+    def add_item(self, item_name, sellable):
+        if len(self.items) == 6:
+            pass
+        else:
+            item = Item(item_name, self.eq_rectangles[self.capacity - 1 - len(self.items)].topleft, sellable)
+            self.items.append(item)
 
     def delete_item(self):
         pass
@@ -43,8 +48,10 @@ class Equipment:
 
 
 class Item:
-    def __init__(self):
-        pass
+    def __init__(self, name, position, sellable=True):
+        self.item_image = ITEMS[name]
+        self.item_position = position
+        self.sellable = sellable
 
 
 class Store:
