@@ -31,27 +31,47 @@ class Equipment:
 
             self.eq_rectangles.append(eq_rectangle)
             self.eq_background_rectangles.append(eq_background_rectangle)
-        self.add_item("gold", False)
+        self.add_item("gold", False, False, True)
 
-    def add_item(self, item_name, sellable):
+    def add_item(self, item_name, sellable, usable, stackable):
         if len(self.items) == 6:
             pass
+        elif self.check_if_in_eq_and_stackable(item_name):
+            for each in self.items:
+                if each.name == item_name:
+                    each.amount += 1
+                    each.update_amount_text()
         else:
-            item = Item(item_name, self.eq_rectangles[self.capacity - 1 - len(self.items)].topleft, sellable)
+            item = Item(item_name, self.eq_rectangles[self.capacity - 1 - len(self.items)].topleft, sellable, usable,
+                        stackable)
             self.items.append(item)
 
     def delete_item(self):
         pass
+
+    def check_if_in_eq_and_stackable(self, name):
+        for each in self.items:
+            if each.name == name and each.stackable:
+                return True
+        return False
 
     def change_visibility(self):
         self.is_visible = not self.is_visible
 
 
 class Item:
-    def __init__(self, name, position, sellable=True):
+    def __init__(self, name, position, sellable=True, usable=True, stackable=True):
+        self.name = name
         self.item_image = ITEMS[name]
         self.item_position = position
         self.sellable = sellable
+        self.usable = usable
+        self.stackable = stackable
+        self.amount = 1
+        self.amount_text = my_bold_font.render(str(self.amount), True, (0, 255, 0))
+
+    def update_amount_text(self):
+        self.amount_text = my_bold_font.render(str(self.amount), True, (0, 255, 0))
 
 
 class Store:
