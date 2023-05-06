@@ -76,9 +76,6 @@ def check_map_collision(player_pos_x, player_pos_y):
 
 
 # this will check if we need walk animation
-def is_player_moved(player_pos_x, player_pos_y, prev_player_pos_x, prev_player_pos_y, prev_cam_pos_x, prev_cam_pos_y):
-    return player_pos_x != prev_player_pos_x or player_pos_y != prev_player_pos_y or cam_pos_x != prev_cam_pos_x or \
-        cam_pos_y != prev_cam_pos_y
 
 
 def is_enemy_collision(player, sprites_group):
@@ -122,10 +119,6 @@ def main():
     player = Player("knight")
     sprite_group = pygame.sprite.Group()
 
-    player_pos_x, player_pos_y = 50, 50
-
-    prev_player_pos_x, prev_player_pos_y = 0, 0
-
     prev_cam_pos_x, prev_cam_pos_y = 0, 0
 
     revive_button = Button(100, 45, 30, 50, player.revive, "revive button")
@@ -154,18 +147,23 @@ def main():
                     player.equipment.change_visibility()
         if player.is_alive:
             keys = pygame.key.get_pressed()
-            player_pos_x, player_pos_y = player_control(player_pos_x, player_pos_y, keys)
-            player.change_position(player_pos_x, player_pos_y)
+            player.player_pos_x, player.player_pos_y = player_control(player.player_pos_x, player.player_pos_y, keys)
+            player.change_position(player.player_pos_x, player.player_pos_y)
 
-            walk_or_not = is_player_moved(player_pos_x, player_pos_y, prev_player_pos_x, prev_player_pos_y,
-                                          prev_cam_pos_x, prev_cam_pos_y)
+            walk_or_not = player.is_player_moved(prev_cam_pos_x, prev_cam_pos_y)
 
             enemy_update(sprite_group, prev_cam_pos_x, prev_cam_pos_y)
 
             draw_window(player, sprite_group, walk_or_not, revive_button)
 
+            # check collision with enemies
             is_enemy_collision(player, sprite_group)
-            prev_player_pos_x, prev_player_pos_y = player_pos_x, player_pos_y
+
+            # update previous player position
+            player.prev_player_pos_x = player.player_pos_x
+            player.prev_player_pos_y = player.player_pos_y
+
+            # update previous camera position
             prev_cam_pos_x, prev_cam_pos_y = cam_pos_x, cam_pos_y
         else:
             draw_window(player, sprite_group, False, revive_button)

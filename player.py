@@ -46,6 +46,10 @@ class Player(pygame.sprite.Sprite):
             self.images = wizzard
             self.death_images = wizzard_death
 
+        self.player_pos_x, self.player_pos_y = 50, 50
+
+        self.prev_player_pos_x, self.prev_player_pos_y = 0, 0
+
         self.is_alive = True
         self.lvl = 1
 
@@ -84,6 +88,10 @@ class Player(pygame.sprite.Sprite):
     def change_position(self, x, y):
         self.rect.x = x
         self.rect.y = y
+
+    def is_player_moved(self, prev_cam_pos_x, prev_cam_pos_y):
+        return self.player_pos_x != self.prev_player_pos_x or self.player_pos_y != self.prev_player_pos_y or \
+            cam_pos_x != prev_cam_pos_x or cam_pos_y != prev_cam_pos_y
 
     def update_hp_bar(self, value):
         if self.hp - value <= 0:
