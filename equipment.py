@@ -40,17 +40,26 @@ class Equipment:
             self.eq_rectangles.append(eq_rectangle)
             self.eq_background_rectangles.append(eq_background_rectangle)
         self.add_item(items["gold"])
+        self.add_item(items["gold"])
+        self.add_item(items["gold"])
+        self.add_item(items["sword_1"])
+        self.add_item(items["sword_3"])
+        self.add_item(items["ring_1"])
 
     def add_item(self, item):
         if len(self.items) == self.capacity:
             pass
-        elif self.check_if_in_eq_and_stackable(item):
+        elif self.check_if_in_eq_and_stackable(item.name):
             for each in self.items:
                 if each.name == item.name and item.stackable:
                     each.amount += 1
                     each.update_amount_text()
         else:
             self.items.append(item)
+
+    def add_gold(self, value):
+        for i in range(value):
+            self.add_item(items["gold"])
 
     def delete_item(self):
         pass
@@ -94,7 +103,7 @@ class Item:
 
 class Store:
     def __init__(self):
-        pass
+        self.is_visible = False
 
 
 items = {

@@ -53,8 +53,10 @@ class Player(pygame.sprite.Sprite):
         self.is_alive = True
         self.lvl = 1
 
+        self.max_hp = 100
         self.hp = 100
         self.exp = 0
+        self.attack_power = 50
 
         self.hp_bar = pygame.Rect(30, 10, 100, 15)
         self.hp_background_bar = pygame.Rect(30, 10, 100, 15)
@@ -145,19 +147,41 @@ class Player(pygame.sprite.Sprite):
         if self.equipment.is_visible:
             self.equipment.draw()
 
+    def fight_simulation(self, enemy_object):
+        while self.is_alive and enemy_object.is_alive:
+            enemy_object.update_hp(self.attack_power)
+            if enemy_object.is_alive:
+                self.update_hp_bar(enemy_object.attack_power)
+                if not self.is_alive:
+                    enemy_object.heal()
+            else:
+                self.update_exp_bar(enemy_object.exp_drop)
+                self.equipment.add_gold(enemy_object.gold_drop)
+
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
+        self.max_hp = opponents_level * 100
         self.hp = opponents_level * 100
-        self.attack_power = opponents_level * 20
+        self.is_alive = True
+        self.attack_power = opponents_level * 5
         self.images = enemy
         self.current_image = 4
         self.exp_drop = opponents_level * 20
+        self.gold_drop = opponents_level * 1
         self.image = self.images[self.current_image]
         self.rect = (self.image.get_rect())
         self.rect.x = 0
         self.rect.y = 0
+
+    def update_hp(self, value):
+        self.hp -= value
+        if self.hp < 0:
+            self.is_alive = False
+
+    def heal(self):
+        self.hp = self.max_hp
 
     def change_position(self, x, y):
         self.rect.x = x

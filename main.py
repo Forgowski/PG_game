@@ -81,10 +81,9 @@ def check_map_collision(player_pos_x, player_pos_y):
 def is_enemy_collision(player, sprites_group):
     for sprite in sprites_group:
         if pygame.sprite.collide_rect(player, sprite):
-            sprites_group.remove(sprite)
-            if player.update_hp_bar(sprite.attack_power):
-                pass
-            player.update_exp_bar(sprite.exp_drop)
+            player.fight_simulation(sprite)
+            if not sprite.is_alive:
+                sprites_group.remove(sprite)
             return True
     return False
 
