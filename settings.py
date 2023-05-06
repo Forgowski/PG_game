@@ -44,6 +44,22 @@ exp_text = my_font.render('EXP', True, (255, 255, 255))
 
 map_array = np.zeros((60, 40), dtype=int)
 np.set_printoptions(threshold=np.inf)
-for i in range(24, 31):
-    for j in range(15):
-        map_array[i][j] = 1
+
+MAP_COLLISION_CORDS = [
+    [24, 32, 0, 15],
+    [0, 10, 21, 22],
+    [0, 1, 34, 40],
+    [0, 7, 39, 40],
+    [6, 7, 34, 40],
+    [15, 22, 28, 32],
+    [29, 31, 32, 40],
+    [33, 34, 33, 40],
+    [43, 60, 29, 32],
+    [3, 4, 35, 38]
+]
+for each in MAP_COLLISION_CORDS:
+    for i in range(each[0], each[1]):
+        for j in range(each[2], each[3]):
+            map_array[i][j] = 1
+
+

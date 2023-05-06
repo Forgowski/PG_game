@@ -40,11 +40,6 @@ class Equipment:
             self.eq_rectangles.append(eq_rectangle)
             self.eq_background_rectangles.append(eq_background_rectangle)
         self.add_item(items["gold"])
-        self.add_item(items["gold"])
-        self.add_item(items["gold"])
-        self.add_item(items["sword_1"])
-        self.add_item(items["sword_3"])
-        self.add_item(items["ring_1"])
 
     def add_item(self, item):
         if len(self.items) == self.capacity:
