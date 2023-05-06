@@ -89,7 +89,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
 
-    def is_player_moved(self, prev_cam_pos_x, prev_cam_pos_y):
+    def is_player_moved(self, cam_pos_x, cam_pos_y, prev_cam_pos_x, prev_cam_pos_y):
         return self.player_pos_x != self.prev_player_pos_x or self.player_pos_y != self.prev_player_pos_y or \
             cam_pos_x != prev_cam_pos_x or cam_pos_y != prev_cam_pos_y
 

@@ -147,17 +147,20 @@ def main():
                     player.equipment.change_visibility()
         if player.is_alive:
             keys = pygame.key.get_pressed()
+
+            # player control
             player.player_pos_x, player.player_pos_y = player_control(player.player_pos_x, player.player_pos_y, keys)
             player.change_position(player.player_pos_x, player.player_pos_y)
 
-            walk_or_not = player.is_player_moved(prev_cam_pos_x, prev_cam_pos_y)
-
-            enemy_update(sprite_group, prev_cam_pos_x, prev_cam_pos_y)
-
-            draw_window(player, sprite_group, walk_or_not, revive_button)
+            walk_or_not = player.is_player_moved(cam_pos_x, cam_pos_y, prev_cam_pos_x, prev_cam_pos_y)
 
             # check collision with enemies
             is_enemy_collision(player, sprite_group)
+
+            # update enemies positions and render new enemy if player kill one of them
+            enemy_update(sprite_group, prev_cam_pos_x, prev_cam_pos_y)
+
+            draw_window(player, sprite_group, walk_or_not, revive_button)
 
             # update previous player position
             player.prev_player_pos_x = player.player_pos_x
