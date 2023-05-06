@@ -1,7 +1,7 @@
 import random
 
 from settings import *
-from character import Character, Enemy
+from player import Player, Enemy
 from button import Button
 
 pygame.init()
@@ -9,37 +9,9 @@ pygame.init()
 
 def draw_window(player, sprite_group, walk_or_not, revive_button):
     WIN.blit(BACKGROUND, (cam_pos_x, cam_pos_y))
-    WIN.blit(player.image, (player.rect.x, player.rect.y))
-    WIN.blit(hp_text, (0, 10))
-    WIN.blit(exp_text, (0, 30))
-    pygame.draw.rect(WIN, CLARET, player.hp_background_bar)
-    pygame.draw.rect(WIN, RED, player.hp_bar)
-    pygame.draw.rect(WIN, GOLD_BACKGROUND, player.exp_background_bar)
-    pygame.draw.rect(WIN, GOLD, player.exp_bar)
-    if walk_or_not:
-        player.update()
-    else:
-        if player.is_alive:
-            player.image = player.images[3]
-        else:
-            pygame.draw.rect(WIN, BLACK, revive_button.rectangle)
-            WIN.blit(revive_button.rectangle_text, revive_button.rectangle_text_position)
-            player.death_animation()
+    player.draw(walk_or_not, revive_button)
 
     sprite_group.draw(WIN)
-
-    if player.equipment.is_visible:
-        for each in player.equipment.eq_background_rectangles:
-            pygame.draw.rect(WIN, BLACK, each)
-        for each in player.equipment.eq_rectangles:
-            pygame.draw.rect(WIN, BROWN, each)
-        for each in player.equipment.items:
-            WIN.blit(each.item_image, each.item_position)
-            if each.stackable:
-                print(each.item_image.get_rect())
-                text_pos_x = each.item_position[0] + each.item_image.get_rect().width - each.amount_text.get_width()
-                text_pos_y = each.item_position[1] + each.item_image.get_rect().height - each.amount_text.get_height()
-                WIN.blit(each.amount_text, (text_pos_x, text_pos_y))
 
     pygame.display.update()
 
@@ -147,7 +119,7 @@ def main():
     clock = pygame.time.Clock()
     run = True
 
-    player = Character("knight")
+    player = Player("knight")
     sprite_group = pygame.sprite.Group()
 
     player_pos_x, player_pos_y = 50, 50

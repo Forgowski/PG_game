@@ -36,7 +36,7 @@ wizzard_death = [pygame.image.load("assets/player/wizzard/wizzard_d.png"),
                  ]
 
 
-class Character(pygame.sprite.Sprite):
+class Player(pygame.sprite.Sprite):
     def __init__(self, hero_type):
         super().__init__()
         if hero_type == "knight":
@@ -116,6 +116,26 @@ class Character(pygame.sprite.Sprite):
         self.is_alive = True
         self.hp = 1
         self.update_hp_bar(0)
+
+    def draw(self, walk_or_not, revive_button):
+        WIN.blit(self.image, (self.rect.x, self.rect.y))
+        WIN.blit(hp_text, (0, 10))
+        WIN.blit(exp_text, (0, 30))
+        pygame.draw.rect(WIN, CLARET, self.hp_background_bar)
+        pygame.draw.rect(WIN, RED, self.hp_bar)
+        pygame.draw.rect(WIN, GOLD_BACKGROUND, self.exp_background_bar)
+        pygame.draw.rect(WIN, GOLD, self.exp_bar)
+        if walk_or_not:
+            self.update()
+        else:
+            if self.is_alive:
+                self.image = self.images[3]
+            else:
+                pygame.draw.rect(WIN, BLACK, revive_button.rectangle)
+                WIN.blit(revive_button.rectangle_text, revive_button.rectangle_text_position)
+                self.death_animation()
+        if self.equipment.is_visible:
+            self.equipment.draw()
 
 
 class Enemy(pygame.sprite.Sprite):

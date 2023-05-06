@@ -58,6 +58,19 @@ class Equipment:
     def change_visibility(self):
         self.is_visible = not self.is_visible
 
+    def draw(self):
+        for each in self.eq_background_rectangles:
+            pygame.draw.rect(WIN, BLACK, each)
+        for each in self.eq_rectangles:
+            pygame.draw.rect(WIN, BROWN, each)
+        for each in self.items:
+            WIN.blit(each.item_image, each.item_position)
+            if each.stackable:
+                print(each.item_image.get_rect())
+                text_pos_x = each.item_position[0] + each.item_image.get_rect().width - each.amount_text.get_width()
+                text_pos_y = each.item_position[1] + each.item_image.get_rect().height - each.amount_text.get_height()
+                WIN.blit(each.amount_text, (text_pos_x, text_pos_y))
+
 
 class Item:
     def __init__(self, name, position, sellable=True, usable=True, stackable=True):
