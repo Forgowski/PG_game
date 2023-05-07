@@ -88,6 +88,13 @@ def is_enemy_collision(player, sprites_group):
     return False
 
 
+def heal_zone(player):
+    x = int((player.player_pos_x - cam_pos_x) / TILE_SIZE)
+    y = int((player.player_pos_y - cam_pos_y) / TILE_SIZE)
+    if (x, y) in MAP_HEAL_ZONE:
+        player.heal(0.1)
+
+
 def draw_fight_scene():
     pass
 
@@ -161,6 +168,9 @@ def main():
 
             draw_window(player, sprite_group, walk_or_not, revive_button)
 
+            # check if player is in heal zone
+            heal_zone(player)
+            
             # update previous player position
             player.prev_player_pos_x = player.player_pos_x
             player.prev_player_pos_y = player.player_pos_y

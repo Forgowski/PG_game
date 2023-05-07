@@ -62,4 +62,7 @@ for each in MAP_COLLISION_CORDS:
         for j in range(each[2], each[3]):
             map_array[i][j] = 1
 
-
+MAP_HEAL_ZONE = []
+for i in range(1, 6):
+    for j in range(34, 39):
+        MAP_HEAL_ZONE.append((i, j))

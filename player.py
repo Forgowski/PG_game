@@ -158,6 +158,17 @@ class Player(pygame.sprite.Sprite):
                 self.update_exp_bar(enemy_object.exp_drop)
                 self.equipment.add_gold(enemy_object.gold_drop)
 
+    def heal(self, value):
+        if self.hp == self.max_hp:
+            return 0
+        else:
+            if self.hp + value > self.max_hp:
+                self.hp = self.max_hp
+                self.hp_bar.width = self.hp
+            else:
+                self.hp = self.hp + value
+                self.hp_bar.width = self.hp
+
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self):
