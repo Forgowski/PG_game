@@ -3,7 +3,6 @@ import random
 from settings import *
 from player import Player, Enemy
 from button import Button
-from equipment import Store
 
 pygame.init()
 
@@ -150,8 +149,6 @@ def main():
 
     revive_button.rectangle_text_position = (text_position_x, text_position_y)
 
-    store = Store(player.hero_type)
-
     while run:
 
         clock.tick(FPS)
@@ -161,6 +158,7 @@ def main():
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_position = pygame.mouse.get_pos()
+                player.store.handle_event(event, mouse_position)
                 if not player.is_alive:
                     revive_button.is_pressed(mouse_position)
             if event.type == pygame.KEYDOWN:
@@ -182,9 +180,9 @@ def main():
             enemy_update(sprite_group, prev_cam_pos_x, prev_cam_pos_y)
 
             # check if player is in shop zone
-            store_zone(player, store)
+            store_zone(player, player.store)
 
-            draw_window(player, sprite_group, walk_or_not, revive_button, store)
+            draw_window(player, sprite_group, walk_or_not, revive_button, player.store)
 
             # check if player is in heal zone
             heal_zone(player)
@@ -196,7 +194,7 @@ def main():
             # update previous camera position
             prev_cam_pos_x, prev_cam_pos_y = cam_pos_x, cam_pos_y
         else:
-            draw_window(player, sprite_group, False, revive_button, store)
+            draw_window(player, sprite_group, False, revive_button, player.store)
 
     pygame.quit()
 

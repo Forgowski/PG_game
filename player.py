@@ -1,5 +1,5 @@
 from settings import *
-from equipment import Equipment
+from equipment import Equipment, Store
 
 knight = [pygame.image.load("assets/player/knight/knight.png"),
           pygame.image.load("assets/player/knight/knight2.png"),
@@ -47,6 +47,7 @@ class Player(pygame.sprite.Sprite):
             self.death_images = wizzard_death
 
         self.hero_type = hero_type
+        self.store = Store(self.hero_type)
 
         self.player_pos_x, self.player_pos_y = 50, 50
 
