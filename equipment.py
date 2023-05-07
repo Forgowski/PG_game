@@ -23,7 +23,7 @@ ITEMS_IMAGES = {"gold": pygame.transform.scale(pygame.image.load("assets/items/g
 
 
 class Equipment:
-    def __init__(self, hero_type):
+    def __init__(self):
         self.items = []
         self.is_visible = False
         self.image = None
@@ -40,13 +40,18 @@ class Equipment:
             self.eq_rectangles.append(eq_rectangle)
             self.eq_background_rectangles.append(eq_background_rectangle)
         self.add_item(items["gold"])
+        self.add_item(items["gold"])
+        self.add_item(items["gold"])
+        self.add_item(items["sword_4"])
+        self.add_item(items["sword_4"])
+        self.add_item(items["sword_4"])
 
     def add_item(self, item):
         if len(self.items) == self.capacity:
             pass
-        elif self.check_if_in_eq_and_stackable(item.name):
+        elif item in self.items and item.stackable:
             for each in self.items:
-                if each.name == item.name and item.stackable:
+                if each.name == item.name:
                     each.amount += 1
                     each.update_amount_text()
         else:
@@ -59,22 +64,18 @@ class Equipment:
     def delete_item(self):
         pass
 
-    def check_if_in_eq_and_stackable(self, name):
-        for each in self.items:
-            if each.name == name and each.stackable:
-                return True
-        return False
-
     def change_visibility(self):
         self.is_visible = not self.is_visible
+        for i in self.items:
+            print(self.items.index(i))
 
     def draw(self):
         for each in self.eq_background_rectangles:
             pygame.draw.rect(WIN, BLACK, each)
         for each in self.eq_rectangles:
             pygame.draw.rect(WIN, BROWN, each)
-        for each in self.items:
-            item_position = self.eq_rectangles[self.capacity - self.items.index(each) - 1].topleft
+        for index, each in enumerate(self.items):
+            item_position = self.eq_rectangles[self.capacity - index - 1].topleft
             WIN.blit(each.item_image, item_position)
             if each.stackable:
                 text_pos_x = item_position[0] + each.item_image.get_rect().width - each.amount_text.get_width()
@@ -83,8 +84,9 @@ class Equipment:
 
 
 class Item:
-    def __init__(self, name, sellable=True, usable=True, stackable=True):
+    def __init__(self, name, sellable=True, usable=True, stackable=True, attack_power=0):
         self.name = name
+        self.attack_power = attack_power
         self.item_image = ITEMS_IMAGES[name]
         self.sellable = sellable
         self.usable = usable
@@ -97,19 +99,52 @@ class Item:
 
 
 class Store:
-    def __init__(self):
+    def __init__(self, hero_type):
+        self.available_items = []
+        if hero_type == "knight":
+            self.available_items.append(items["hp_potion"])
+            self.available_items.append(items["sword_1"])
+            self.available_items.append(items["sword_2"])
+            self.available_items.append(items["sword_3"])
+            self.available_items.append(items["sword_4"])
+        else:
+            self.available_items.append(items["hp_potion"])
+            self.available_items.append(items["ring_1"])
+            self.available_items.append(items["ring_2"])
+            self.available_items.append(items["ring_3"])
+            self.available_items.append(items["ring_4"])
         self.is_visible = False
+        self.rectangles = []
+        self.background_rectangles = []
+        for each in range(len(self.available_items)):
+            rectangle = pygame.Rect((WIDTH / 2) + len(self.available_items) / 2 * 40 - each * 40,
+                                    HEIGHT / 4, ITEMS_WIDTH, ITEMS_HEIGHT)
+            background_rectangle = pygame.Rect(WIDTH / 2 + len(self.available_items) / 2 * 40 - each * 40 - 4,
+                                               HEIGHT / 4 - 4, 40, 40)
+            self.rectangles.append(rectangle)
+            self.background_rectangles.append(background_rectangle)
+
+    def draw(self):
+        if self.is_visible:
+            for each in self.background_rectangles:
+                pygame.draw.rect(WIN, BLACK, each)
+            for each in self.rectangles:
+                pygame.draw.rect(WIN, BROWN, each)
+            for each in self.available_items:
+                item_position = self.rectangles[
+                    len(self.available_items) - self.available_items.index(each) - 1].topleft
+                WIN.blit(each.item_image, item_position)
 
 
 items = {
     "gold": Item("gold", False, False, True),
     "hp_potion": Item("hp_potion", True, True, True),
-    "sword_1": Item("sword_1", True, True, False),
-    "sword_2": Item("sword_2", True, True, False),
-    "sword_3": Item("sword_3", True, True, False),
-    "sword_4": Item("sword_4", True, True, False),
-    "ring_1": Item("ring_1", True, True, False),
-    "ring_2": Item("ring_2", True, True, False),
-    "ring_3": Item("ring_3", True, True, False),
-    "ring_4": Item("ring_4", True, True, False),
+    "sword_1": Item("sword_1", True, True, False, 20),
+    "sword_2": Item("sword_2", True, True, False, 100),
+    "sword_3": Item("sword_3", True, True, False, 200),
+    "sword_4": Item("sword_4", True, True, False, 500),
+    "ring_1": Item("ring_1", True, True, False, 20),
+    "ring_2": Item("ring_2", True, True, False, 100),
+    "ring_3": Item("ring_3", True, True, False, 200),
+    "ring_4": Item("ring_4", True, True, False, 500),
 }

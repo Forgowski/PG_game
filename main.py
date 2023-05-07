@@ -3,15 +3,19 @@ import random
 from settings import *
 from player import Player, Enemy
 from button import Button
+from equipment import Store
 
 pygame.init()
 
 
-def draw_window(player, sprite_group, walk_or_not, revive_button):
+def draw_window(player, sprite_group, walk_or_not, revive_button, store):
     WIN.blit(BACKGROUND, (cam_pos_x, cam_pos_y))
-    player.draw(walk_or_not, revive_button)
+
+    store.draw()
 
     sprite_group.draw(WIN)
+
+    player.draw(walk_or_not, revive_button)
 
     pygame.display.update()
 
@@ -137,6 +141,8 @@ def main():
 
     revive_button.rectangle_text_position = (text_position_x, text_position_y)
 
+    store = Store(player.hero_type)
+
     while run:
 
         clock.tick(FPS)
@@ -166,11 +172,11 @@ def main():
             # update enemies positions and render new enemy if player kill one of them
             enemy_update(sprite_group, prev_cam_pos_x, prev_cam_pos_y)
 
-            draw_window(player, sprite_group, walk_or_not, revive_button)
+            draw_window(player, sprite_group, walk_or_not, revive_button, store)
 
             # check if player is in heal zone
             heal_zone(player)
-            
+
             # update previous player position
             player.prev_player_pos_x = player.player_pos_x
             player.prev_player_pos_y = player.player_pos_y
@@ -178,7 +184,7 @@ def main():
             # update previous camera position
             prev_cam_pos_x, prev_cam_pos_y = cam_pos_x, cam_pos_y
         else:
-            draw_window(player, sprite_group, False, revive_button)
+            draw_window(player, sprite_group, False, revive_button, store)
 
     pygame.quit()
 

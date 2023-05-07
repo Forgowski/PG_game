@@ -45,6 +45,7 @@ exp_text = my_font.render('EXP', True, (255, 255, 255))
 map_array = np.zeros((60, 40), dtype=int)
 np.set_printoptions(threshold=np.inf)
 
+MAP_HEAL_ZONE = []
 MAP_COLLISION_CORDS = [
     [24, 32, 0, 15],
     [0, 10, 21, 22],
@@ -57,12 +58,17 @@ MAP_COLLISION_CORDS = [
     [43, 60, 29, 32],
     [3, 4, 35, 38]
 ]
-for each in MAP_COLLISION_CORDS:
-    for i in range(each[0], each[1]):
-        for j in range(each[2], each[3]):
-            map_array[i][j] = 1
 
-MAP_HEAL_ZONE = []
-for i in range(1, 6):
-    for j in range(34, 39):
-        MAP_HEAL_ZONE.append((i, j))
+
+def setting_loops():
+    for each in MAP_COLLISION_CORDS:
+        for i in range(each[0], each[1]):
+            for j in range(each[2], each[3]):
+                map_array[i][j] = 1
+
+    for i in range(1, 6):
+        for j in range(34, 39):
+            MAP_HEAL_ZONE.append((i, j))
+
+
+setting_loops()

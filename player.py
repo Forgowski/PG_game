@@ -46,6 +46,8 @@ class Player(pygame.sprite.Sprite):
             self.images = wizzard
             self.death_images = wizzard_death
 
+        self.hero_type = hero_type
+
         self.player_pos_x, self.player_pos_y = 50, 50
 
         self.prev_player_pos_x, self.prev_player_pos_y = 0, 0
@@ -76,7 +78,7 @@ class Player(pygame.sprite.Sprite):
         self.counter = 0
         self.death_frame_counter = 0
 
-        self.equipment = Equipment(hero_type)
+        self.equipment = Equipment()
 
     def update(self):
         if self.counter % self.make_slower == 0:
