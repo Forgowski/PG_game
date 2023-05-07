@@ -66,8 +66,6 @@ class Equipment:
 
     def change_visibility(self):
         self.is_visible = not self.is_visible
-        for i in self.items:
-            print(self.items.index(i))
 
     def draw(self):
         for each in self.eq_background_rectangles:

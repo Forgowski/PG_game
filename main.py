@@ -72,14 +72,16 @@ def player_control(player_pos_x, player_pos_y, keys):
     return player_pos_x, player_pos_y
 
 
+def tile_cords(cord_x, cord_y):
+    x = int((cord_x - cam_pos_x) / TILE_SIZE)
+    y = int((cord_y - cam_pos_y) / TILE_SIZE)
+    return x, y
+
+
 # looking for collision with maps object
-def check_map_collision(player_pos_x, player_pos_y):
-    x = int((player_pos_x - cam_pos_x) / TILE_SIZE)
-    y = int((player_pos_y - cam_pos_y) / TILE_SIZE)
+def check_map_collision(cord_x, cord_y):
+    x, y = tile_cords(cord_x, cord_y)
     return map_array[x, y]
-
-
-# this will check if we need walk animation
 
 
 def is_enemy_collision(player, sprites_group):
@@ -93,10 +95,17 @@ def is_enemy_collision(player, sprites_group):
 
 
 def heal_zone(player):
-    x = int((player.player_pos_x - cam_pos_x) / TILE_SIZE)
-    y = int((player.player_pos_y - cam_pos_y) / TILE_SIZE)
+    x, y = tile_cords(player.player_pos_x, player.prev_player_pos_y)
     if (x, y) in MAP_HEAL_ZONE:
         player.heal(0.1)
+
+
+def store_zone(player, store):
+    x, y = tile_cords(player.player_pos_x, player.player_pos_y)
+    if x == 27 and y == 15:
+        store.is_visible = True
+    else:
+        store.is_visible = False
 
 
 def draw_fight_scene():
@@ -171,6 +180,9 @@ def main():
 
             # update enemies positions and render new enemy if player kill one of them
             enemy_update(sprite_group, prev_cam_pos_x, prev_cam_pos_y)
+
+            # check if player is in shop zone
+            store_zone(player, store)
 
             draw_window(player, sprite_group, walk_or_not, revive_button, store)
 
