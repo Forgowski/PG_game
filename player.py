@@ -172,6 +172,19 @@ class Player(pygame.sprite.Sprite):
                 self.hp = self.hp + value
                 self.hp_bar.width = self.hp
 
+    def handle_event(self, event, mouse_position):
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_e:
+                self.equipment.change_visibility()
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == pygame.BUTTON_RIGHT and self.store.is_visible:
+                for i in self.store.available_items:
+                    if i.rectangle.collidepoint(mouse_position):
+                        print(f"{i.rectangle.topleft}")
+                        if self.equipment.gold > i.price:
+                            self.equipment.add_item(i)
+
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self):

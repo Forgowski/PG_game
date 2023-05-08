@@ -10,11 +10,11 @@ pygame.init()
 def draw_window(player, sprite_group, walk_or_not, revive_button, store):
     WIN.blit(BACKGROUND, (cam_pos_x, cam_pos_y))
 
-    store.draw()
-
     sprite_group.draw(WIN)
 
     player.draw(walk_or_not, revive_button)
+
+    store.draw()
 
     pygame.display.update()
 
@@ -155,15 +155,11 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
-
+            mouse_position = pygame.mouse.get_pos()
+            player.handle_event(event, mouse_position)
             if event.type == pygame.MOUSEBUTTONDOWN:
-                mouse_position = pygame.mouse.get_pos()
-                player.store.handle_event(event, mouse_position)
                 if not player.is_alive:
                     revive_button.is_pressed(mouse_position)
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_e:
-                    player.equipment.change_visibility()
         if player.is_alive:
             keys = pygame.key.get_pressed()
 
