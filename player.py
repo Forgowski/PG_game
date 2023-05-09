@@ -181,7 +181,6 @@ class Player(pygame.sprite.Sprite):
             if event.button == pygame.BUTTON_RIGHT and self.store.is_visible:
                 for i in self.store.available_items:
                     if i.rectangle.collidepoint(mouse_position):
-                        print(f"{i.rectangle.topleft}")
                         if self.equipment.gold > i.price:
                             self.equipment.add_item(i)
 

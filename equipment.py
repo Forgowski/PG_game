@@ -97,6 +97,7 @@ class Item:
         self.stackable = stackable
         self.amount = 1
         self.amount_text = my_bold_font.render(str(self.amount), True, (0, 255, 0))
+        self.price_text = my_bold_font.render(str(self.price), True, (120, 255, 10))
 
     def update_amount_text(self):
         self.amount_text = my_bold_font.render(str(self.amount), True, (0, 255, 0))
@@ -139,6 +140,10 @@ class Store:
                     len(self.available_items) - self.available_items.index(each) - 1].topleft
                 WIN.blit(each.item_image, item_position)
                 each.rectangle.topleft = item_position
+
+                text_pos_x = item_position[0] + each.rectangle.width - each.price_text.get_width()
+                text_pos_y = item_position[1] + each.rectangle.height - each.price_text.get_height()
+                WIN.blit(each.price_text, (text_pos_x, text_pos_y))
 
 
 items = {
