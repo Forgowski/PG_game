@@ -66,6 +66,8 @@ class Player(pygame.sprite.Sprite):
         self.exp_to_next_level = 100
         self.exp_bar = pygame.Rect(30, 30, 0, 15)
         self.exp_background_bar = pygame.Rect(30, 30, 100, 15)
+        self.info_rectangle = None
+        self.is_info_rectangle_visible = False
 
         self.current_image = 0
         self.current_death_image = 0
@@ -150,6 +152,10 @@ class Player(pygame.sprite.Sprite):
         if self.equipment.is_visible:
             self.equipment.draw()
 
+    def info_draw(self):
+        if self.is_info_rectangle_visible:
+            pygame.draw.rect(WIN, BLACK, self.info_rectangle)
+
     def fight_simulation(self, enemy_object):
         while self.is_alive and enemy_object.is_alive:
             enemy_object.update_hp(self.attack_power)
@@ -183,6 +189,25 @@ class Player(pygame.sprite.Sprite):
                     if i.rectangle.collidepoint(mouse_position):
                         if self.equipment.gold > i.price:
                             self.equipment.add_item(i)
+        if self.store.is_visible:
+            for i in self.store.available_items:
+                if i.rectangle.collidepoint(mouse_position):
+                    i.info_rectangle.topleft = mouse_position
+                    self.info_rectangle = i.info_rectangle
+                    self.is_info_rectangle_visible = True
+                    break
+                else:
+                    self.is_info_rectangle_visible = False
+
+        if self.equipment.is_visible:
+            for i in self.equipment.items:
+                if i.rectangle.collidepoint(mouse_position):
+                    i.info_rectangle.topleft = mouse_position
+                    self.info_rectangle = i.info_rectangle
+                    self.is_info_rectangle_visible = True
+                    break
+                else:
+                    self.is_info_rectangle_visible = False
 
 
 class Enemy(pygame.sprite.Sprite):

@@ -16,6 +16,8 @@ def draw_window(player, sprite_group, walk_or_not, revive_button, store):
 
     store.draw()
 
+    player.info_draw()
+
     pygame.display.update()
 
 

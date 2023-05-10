@@ -1,3 +1,5 @@
+import pygame
+
 from settings import *
 
 ITEMS_IMAGES = {"gold": pygame.transform.scale(pygame.image.load("assets/items/gold.png"), (ITEMS_WIDTH, ITEMS_HEIGHT)),
@@ -98,6 +100,7 @@ class Item:
         self.amount = 1
         self.amount_text = my_bold_font.render(str(self.amount), True, (0, 255, 0))
         self.price_text = my_bold_font.render(str(self.price), True, (120, 255, 10))
+        self.info_rectangle = pygame.Rect(0, 0, 100, 100)
 
     def update_amount_text(self):
         self.amount_text = my_bold_font.render(str(self.amount), True, (0, 255, 0))
