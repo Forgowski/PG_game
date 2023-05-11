@@ -1,5 +1,3 @@
-import pygame
-
 from settings import *
 
 ITEMS_IMAGES = {"gold": pygame.transform.scale(pygame.image.load("assets/items/gold.png"), (ITEMS_WIDTH, ITEMS_HEIGHT)),
@@ -88,7 +86,7 @@ class Equipment:
 
 
 class Item:
-    def __init__(self, name, sellable=True, usable=True, stackable=True, attack_power=0, price=0):
+    def __init__(self, name, sellable=True, usable=True, stackable=True, attack_power=0, price=0, description=""):
         self.name = name
         self.price = price
         self.attack_power = attack_power
@@ -99,8 +97,14 @@ class Item:
         self.stackable = stackable
         self.amount = 1
         self.amount_text = my_bold_font.render(str(self.amount), True, (0, 255, 0))
-        self.price_text = my_bold_font.render(str(self.price), True, (120, 255, 10))
-        self.info_rectangle = pygame.Rect(0, 0, 100, 100)
+        self.description = description
+        if self.attack_power == 0:
+            self.info_text = my_font.render(f"price: {self.price} description: {self.description}", True,
+                                            (255, 255, 255))
+        else:
+            self.info_text = my_font.render(f"price: {self.price} description: attack power +{self.attack_power}", True,
+                                            (255, 255, 255))
+        self.info_rectangle = self.info_text.get_rect()
 
     def update_amount_text(self):
         self.amount_text = my_bold_font.render(str(self.amount), True, (0, 255, 0))
@@ -144,14 +148,10 @@ class Store:
                 WIN.blit(each.item_image, item_position)
                 each.rectangle.topleft = item_position
 
-                text_pos_x = item_position[0] + each.rectangle.width - each.price_text.get_width()
-                text_pos_y = item_position[1] + each.rectangle.height - each.price_text.get_height()
-                WIN.blit(each.price_text, (text_pos_x, text_pos_y))
-
 
 items = {
-    "gold": Item("gold", False, False, True),
-    "hp_potion": Item("hp_potion", True, True, True, price=2),
+    "gold": Item("gold", False, False, True, description="use to buy items"),
+    "hp_potion": Item("hp_potion", True, True, True, price=2, description="heal 50hp"),
     "sword_1": Item("sword_1", True, True, False, 20, 30),
     "sword_2": Item("sword_2", True, True, False, 100, 150),
     "sword_3": Item("sword_3", True, True, False, 200, 500),
