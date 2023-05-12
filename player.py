@@ -182,17 +182,20 @@ class Player(pygame.sprite.Sprite):
         return 1
 
     def handle_event(self, event, mouse_position):
+        # open or close equipment
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_e:
                 self.equipment.change_visibility()
 
+        # check that player want to buy item
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == pygame.BUTTON_RIGHT and self.store.is_visible:
                 for i in self.store.available_items:
                     if i.rectangle.collidepoint(mouse_position):
-                        if self.equipment.gold > i.price:
+                        if self.equipment.gold >= i.price:
                             self.equipment.add_item(i)
 
+            # check that player want to use some item
             if event.button == pygame.BUTTON_RIGHT and self.equipment.is_visible and not self.store.is_visible:
                 for i in self.equipment.items:
                     if i.rectangle.collidepoint(mouse_position):
@@ -201,11 +204,19 @@ class Player(pygame.sprite.Sprite):
                             self.equipment.items[i].amount -= 1
                             self.equipment.check_items_amount()
 
+            # check that player want sell some item
+            if event.button == pygame.BUTTON_LEFT and self.equipment.is_visible and self.store.is_visible:
+                for i in self.equipment.items:
+                    if i.rectangle.collidepoint(mouse_position):
+                        self.equipment.sell_item(i)
+
+        # show info box for store items
         if self.store.is_visible:
             for i in self.store.available_items:
                 if self.check_collide_points_for_info(i, mouse_position):
                     break
 
+        # show info box for equipment items
         if self.equipment.is_visible:
             for i in self.equipment.items:
                 if self.check_collide_points_for_info(i, mouse_position):

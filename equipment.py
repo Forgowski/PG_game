@@ -63,8 +63,11 @@ class Equipment:
         self.gold -= value
         self.items[0].amount = self.gold
 
-    def delete_item(self):
-        pass
+    def sell_item(self, item):
+        if item.sellable and item in self.items:
+            self.add_gold(item.price//2)
+            item.amount -= 1
+            self.check_items_amount()
 
     def change_visibility(self):
         self.is_visible = not self.is_visible
