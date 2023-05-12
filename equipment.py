@@ -48,10 +48,10 @@ class Equipment:
             for each in self.items:
                 if each.name == item.name:
                     each.amount += 1
-                    each.update_amount_text()
                     self.subtract_gold(item.price)
         else:
             self.items.append(items[item.name])
+            items[item.name].amount += 1
             self.subtract_gold(item.price)
 
     def add_gold(self, value):
@@ -62,7 +62,6 @@ class Equipment:
     def subtract_gold(self, value):
         self.gold -= value
         self.items[0].amount = self.gold
-        self.items[0].update_amount_text()
 
     def delete_item(self):
         pass
@@ -70,12 +69,18 @@ class Equipment:
     def change_visibility(self):
         self.is_visible = not self.is_visible
 
+    def check_items_amount(self):
+        for i in self.items:
+            if i.amount == 0 and i.name != "gold":
+                self.items.remove(i)
+
     def draw(self):
         for each in self.eq_background_rectangles:
             pygame.draw.rect(WIN, BLACK, each)
         for each in self.eq_rectangles:
             pygame.draw.rect(WIN, BROWN, each)
         for index, each in enumerate(self.items):
+            each.update_amount_text()
             item_position = self.eq_rectangles[self.capacity - index - 1].topleft
             WIN.blit(each.item_image, item_position)
             if each.stackable:
@@ -86,7 +91,7 @@ class Equipment:
 
 
 class Item:
-    def __init__(self, name, sellable=True, usable=True, stackable=True, attack_power=0, price=0, description=""):
+    def __init__(self, name, sellable=True, usable=True, stackable=True, attack_power=0, price=0, description="", use=None):
         self.name = name
         self.price = price
         self.attack_power = attack_power
@@ -95,7 +100,8 @@ class Item:
         self.sellable = sellable
         self.usable = usable
         self.stackable = stackable
-        self.amount = 1
+        self.use = use
+        self.amount = 0
         self.amount_text = my_bold_font.render(str(self.amount), True, (0, 255, 0))
         self.description = description
         if self.attack_power == 0:
@@ -149,15 +155,19 @@ class Store:
                 each.rectangle.topleft = item_position
 
 
+def use_hp_potion(player):
+    return player.heal(50)
+
+
 items = {
     "gold": Item("gold", False, False, True, description="use to buy items"),
-    "hp_potion": Item("hp_potion", True, True, True, price=2, description="heal 50hp"),
-    "sword_1": Item("sword_1", True, True, False, 20, 30),
-    "sword_2": Item("sword_2", True, True, False, 100, 150),
-    "sword_3": Item("sword_3", True, True, False, 200, 500),
-    "sword_4": Item("sword_4", True, True, False, 500, 1500),
-    "ring_1": Item("ring_1", True, True, False, 20, 30),
-    "ring_2": Item("ring_2", True, True, False, 100, 50),
-    "ring_3": Item("ring_3", True, True, False, 200, 500),
-    "ring_4": Item("ring_4", True, True, False, 500, 1500),
+    "hp_potion": Item("hp_potion", True, True, True, price=2, description="heal 50hp", use=use_hp_potion),
+    "sword_1": Item("sword_1", True, False, False, 20, 30),
+    "sword_2": Item("sword_2", True, False, False, 100, 150),
+    "sword_3": Item("sword_3", True, False, False, 200, 500),
+    "sword_4": Item("sword_4", True, False, False, 500, 1500),
+    "ring_1": Item("ring_1", True, False, False, 20, 30),
+    "ring_2": Item("ring_2", True, False, False, 100, 50),
+    "ring_3": Item("ring_3", True, False, False, 200, 500),
+    "ring_4": Item("ring_4", True, False, False, 500, 1500),
 }

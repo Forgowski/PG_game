@@ -179,6 +179,7 @@ class Player(pygame.sprite.Sprite):
             else:
                 self.hp = self.hp + value
                 self.hp_bar.width = self.hp
+        return 1
 
     def handle_event(self, event, mouse_position):
         if event.type == pygame.KEYDOWN:
@@ -191,6 +192,14 @@ class Player(pygame.sprite.Sprite):
                     if i.rectangle.collidepoint(mouse_position):
                         if self.equipment.gold > i.price:
                             self.equipment.add_item(i)
+
+            if event.button == pygame.BUTTON_RIGHT and self.equipment.is_visible and not self.store.is_visible:
+                for i in self.equipment.items:
+                    if i.rectangle.collidepoint(mouse_position):
+                        if i.use(self):
+                            i = self.equipment.items.index(i)
+                            self.equipment.items[i].amount -= 1
+                            self.equipment.check_items_amount()
 
         if self.store.is_visible:
             for i in self.store.available_items:
