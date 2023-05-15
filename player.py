@@ -1,5 +1,4 @@
-from settings import *
-from equipment import Equipment, Store
+from equipment import *
 
 knight = [pygame.image.load("assets/player/knight/knight.png"),
           pygame.image.load("assets/player/knight/knight2.png"),
@@ -193,7 +192,7 @@ class Player(pygame.sprite.Sprite):
                 for i in self.store.available_items:
                     if i.rectangle.collidepoint(mouse_position):
                         if self.equipment.gold >= i.price:
-                            self.equipment.add_item(i)
+                            self.equipment.add_item(create_item(i.name))
 
             # check that player want to use some item
             if event.button == pygame.BUTTON_RIGHT and self.equipment.is_visible and not self.store.is_visible:
@@ -210,27 +209,27 @@ class Player(pygame.sprite.Sprite):
                     if i.rectangle.collidepoint(mouse_position):
                         self.equipment.sell_item(i)
 
-        # show info box for store items
+        # Show info box for store items
         if self.store.is_visible:
             for i in self.store.available_items:
-                if self.check_collide_points_for_info(i, mouse_position):
-                    break
+                if i.rectangle.collidepoint(mouse_position):
+                    i.info_rectangle.bottomright = mouse_position
+                    self.info_rectangle = i.info_rectangle
+                    self.info_text = i.info_text
+                    self.is_info_rectangle_visible = True
+                    return True
 
-        # show info box for equipment items
+        # Show info box for equipment items
         if self.equipment.is_visible:
             for i in self.equipment.items:
-                if self.check_collide_points_for_info(i, mouse_position):
-                    break
+                if i.rectangle.collidepoint(mouse_position):
+                    i.info_rectangle.bottomright = mouse_position
+                    self.info_rectangle = i.info_rectangle
+                    self.info_text = i.info_text
+                    self.is_info_rectangle_visible = True
+                    return True
 
-    def check_collide_points_for_info(self, i, mouse_position):
-        if i.rectangle.collidepoint(mouse_position):
-            i.info_rectangle.bottomright = mouse_position
-            self.info_rectangle = i.info_rectangle
-            self.info_text = i.info_text
-            self.is_info_rectangle_visible = True
-            return True
-        else:
-            self.is_info_rectangle_visible = False
+        self.is_info_rectangle_visible = False
 
 
 class Enemy(pygame.sprite.Sprite):
