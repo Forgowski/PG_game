@@ -8,12 +8,12 @@ knight = [pygame.image.load("assets/player/knight/knight.png"),
           pygame.image.load("assets/player/knight/knight5.png"),
           ]
 
-wizzard = [pygame.image.load("assets/player/wizzard/wizzard.png"),
-           pygame.image.load("assets/player/wizzard/wizzard2.png"),
-           pygame.image.load("assets/player/wizzard/wizzard3.png"),
-           pygame.image.load("assets/player/wizzard/wizzard4.png"),
-           pygame.image.load("assets/player/wizzard/wizzard5.png"),
-           ]
+wizard = [pygame.image.load("assets/player/wizard/wizard.png"),
+          pygame.image.load("assets/player/wizard/wizard2.png"),
+          pygame.image.load("assets/player/wizard/wizard3.png"),
+          pygame.image.load("assets/player/wizard/wizard4.png"),
+          pygame.image.load("assets/player/wizard/wizard5.png"),
+          ]
 
 enemy = [pygame.image.load("assets/player/enemy/enemy.png"),
          pygame.image.load("assets/player/enemy/enemy2.png"),
@@ -29,11 +29,11 @@ knight_death = [pygame.image.load("assets/player/knight/knight_d.png"),
                 pygame.image.load("assets/player/knight/knight_d3.png"),
                 ]
 
-wizzard_death = [pygame.image.load("assets/player/wizzard/wizzard_d.png"),
-                 pygame.image.load("assets/player/wizzard/wizzard_d1.png"),
-                 pygame.image.load("assets/player/wizzard/wizzard_d2.png"),
-                 pygame.image.load("assets/player/wizzard/wizzard_d3.png"),
-                 ]
+wizard_death = [pygame.image.load("assets/player/wizard/wizard_d.png"),
+                pygame.image.load("assets/player/wizard/wizard_d1.png"),
+                pygame.image.load("assets/player/wizard/wizard_d2.png"),
+                pygame.image.load("assets/player/wizard/wizard_d3.png"),
+                ]
 
 
 class Player(pygame.sprite.Sprite):
@@ -43,8 +43,8 @@ class Player(pygame.sprite.Sprite):
             self.images = knight
             self.death_images = knight_death
         else:
-            self.images = wizzard
-            self.death_images = wizzard_death
+            self.images = wizard
+            self.death_images = wizard_death
 
         self.hero_type = hero_type
         self.store = Store(self.hero_type)
@@ -198,7 +198,7 @@ class Player(pygame.sprite.Sprite):
             # check that player want to use some item
             if event.button == pygame.BUTTON_RIGHT and self.equipment.is_visible and not self.store.is_visible:
                 for i in self.equipment.items:
-                    if i.rectangle.collidepoint(mouse_position):
+                    if i.rectangle.collidepoint(mouse_position) and i.use is not None:
                         if i.use(self):
                             i = self.equipment.items.index(i)
                             self.equipment.items[i].amount -= 1
