@@ -1,4 +1,7 @@
+import random
+
 from equipment import *
+from stats import Stats
 
 knight = [pygame.image.load("assets/player/knight/knight.png"),
           pygame.image.load("assets/player/knight/knight2.png"),
@@ -55,10 +58,9 @@ class Player(pygame.sprite.Sprite):
         self.is_alive = True
         self.lvl = 1
 
-        self.max_hp = 100
+        self.stats = Stats(100, 50, 0)
         self.hp = 100
         self.exp = 0
-        self.attack_power = 50
 
         self.hp_bar = pygame.Rect(30, 10, 100, 15)
         self.hp_background_bar = pygame.Rect(30, 10, 100, 15)
@@ -159,9 +161,10 @@ class Player(pygame.sprite.Sprite):
 
     def fight_simulation(self, enemy_object):
         while self.is_alive and enemy_object.is_alive:
-            enemy_object.update_hp(self.attack_power)
+            enemy_object.update_hp(self.stats.attack_power)
             if enemy_object.is_alive:
-                self.update_hp_bar(enemy_object.attack_power)
+                if random.randint(1, 100) > self.stats.agility:
+                    self.update_hp_bar(enemy_object.attack_power)
                 if not self.is_alive:
                     enemy_object.heal()
             else:
@@ -169,11 +172,11 @@ class Player(pygame.sprite.Sprite):
                 self.equipment.add_gold(enemy_object.gold_drop)
 
     def heal(self, value):
-        if self.hp == self.max_hp:
+        if self.hp == self.stats.max_hp:
             return 0
         else:
-            if self.hp + value > self.max_hp:
-                self.hp = self.max_hp
+            if self.hp + value > self.stats.max_hp:
+                self.hp = self.stats.max_hp
                 self.hp_bar.width = self.hp
             else:
                 self.hp = self.hp + value
