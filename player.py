@@ -58,7 +58,7 @@ class Player(pygame.sprite.Sprite):
         self.is_alive = True
         self.lvl = 1
 
-        self.stats = Stats(100, 50, 0)
+        self.stats = Stats(100, 50, 0, 0)
         self.hp = 100
         self.exp = 0
 
@@ -144,15 +144,21 @@ class Player(pygame.sprite.Sprite):
         pygame.draw.rect(WIN, GOLD, self.exp_bar)
         if walk_or_not:
             self.update()
+
         else:
             if self.is_alive:
                 self.image = self.images[3]
+
             else:
                 pygame.draw.rect(WIN, BLACK, revive_button.rectangle)
                 WIN.blit(revive_button.rectangle_text, revive_button.rectangle_text_position)
                 self.death_animation()
+
         if self.equipment.is_visible:
             self.equipment.draw()
+
+        if self.stats.is_visible:
+            self.stats.draw()
 
     def info_draw(self):
         if self.is_info_rectangle_visible and (self.store.is_visible or self.equipment.is_visible):
@@ -187,7 +193,18 @@ class Player(pygame.sprite.Sprite):
         # open or close equipment
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_e:
-                self.equipment.change_visibility()
+                if self.equipment.is_visible:
+                    self.equipment.is_visible = False
+                else:
+                    self.equipment.is_visible = True
+                    self.stats.is_visible = False
+
+            if event.key == pygame.K_s:
+                if self.stats.is_visible:
+                    self.stats.is_visible = False
+                else:
+                    self.stats.is_visible = True
+                    self.equipment.is_visible = False
 
         # check that player want to buy item
         if event.type == pygame.MOUSEBUTTONDOWN:

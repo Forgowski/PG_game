@@ -74,9 +74,6 @@ class Equipment:
             item.amount -= 1
             self.check_items_amount()
 
-    def change_visibility(self):
-        self.is_visible = not self.is_visible
-
     def check_items_amount(self):
         for i in self.items:
             if i.amount == 0 and i.name != "gold":

@@ -143,14 +143,6 @@ def main():
 
     revive_button = Button(100, 45, 30, 50, player.revive, "revive button")
 
-    text_position_x = (revive_button.rectangle.width - (
-        revive_button.rectangle_text.get_width())) / 2 + revive_button.rectangle.x
-
-    text_position_y = (revive_button.rectangle.height - (
-        revive_button.rectangle_text.get_height())) / 2 + revive_button.rectangle.y
-
-    revive_button.rectangle_text_position = (text_position_x, text_position_y)
-
     while run:
 
         clock.tick(FPS)
