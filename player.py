@@ -229,6 +229,9 @@ class Player(pygame.sprite.Sprite):
                     if i.rectangle.collidepoint(mouse_position):
                         self.equipment.sell_item(i)
 
+            if event.button == pygame.BUTTON_LEFT and self.stats.is_visible:
+                self.stats.event_handle(mouse_position)
+
         # Show info box for store items
         if self.store.is_visible:
             for i in self.store.available_items:

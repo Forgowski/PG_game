@@ -98,5 +98,15 @@ class Stats:
         WIN.blit(self.available_points_text, (WIDTH / 2 - self.available_points_text.get_rect().width / 2,
                                               self.critical_damage_button.rectangle.topleft[1] + 45))
 
-    def event_handle(self):
-        pass
+    def event_handle(self, mouse_position):
+        if self.agility_button.rectangle.collidepoint(mouse_position):
+            self.agility_button.onclick()
+
+        if self.max_hp_button.rectangle.collidepoint(mouse_position):
+            self.max_hp_button.onclick()
+
+        if self.attack_power_button.rectangle.collidepoint(mouse_position):
+            self.attack_power_button.onclick()
+
+        if self.critical_damage_button.rectangle.collidepoint(mouse_position):
+            self.critical_damage_button.onclick()
