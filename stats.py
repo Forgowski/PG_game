@@ -11,7 +11,7 @@ upgrade_stats_png = pygame.transform.scale(upgrade_stats_png, (20, 20))
 class Stats:
     def __init__(self, max_hp, attack_power, agility, critical_damage):
         self.max_hp = max_hp
-        self.critical_damage = critical_damage
+        self.critical_damage_chance = critical_damage
         self.attack_power = attack_power
         self.agility = agility
         self.is_visible = False
@@ -28,55 +28,81 @@ class Stats:
         self.max_hp_button = Button(self.upgrade_Stats_png_rectangle.width, self.upgrade_Stats_png_rectangle.height,
                                     self.background_pos_x + 270, self.background_pos_y + 80, self.max_hp_up, None,
                                     upgrade_stats_png)
-        self.max_hp_text = stats_font.render(f"max HP: {self.max_hp}", True, (255, 255, 255))
 
         self.attack_power_button = Button(self.upgrade_Stats_png_rectangle.width,
                                           self.upgrade_Stats_png_rectangle.height,
                                           self.background_pos_x + 270, self.background_pos_y + 145,
                                           self.attack_power_up,
                                           None, upgrade_stats_png)
-        self.attack_power_text = stats_font.render(f"attack power: {self.attack_power}", True, (255, 255, 255))
 
         self.agility_button = Button(self.upgrade_Stats_png_rectangle.width, self.upgrade_Stats_png_rectangle.height,
                                      self.background_pos_x + 270, self.background_pos_y + 210, self.agility_up, None,
                                      upgrade_stats_png)
-        self.agility_text = stats_font.render(f"agility points: {self.agility}", True, (255, 255, 255))
 
         self.critical_damage_button = Button(self.upgrade_Stats_png_rectangle.width,
                                              self.upgrade_Stats_png_rectangle.height,
                                              self.background_pos_x + 270, self.background_pos_y + 275,
                                              self.critical_damage_up, None, upgrade_stats_png)
-        self.critical_damage_text = stats_font.render(f"critical damage chance: {self.critical_damage}", True,
+
+        self.max_hp_text = stats_font.render(f"max HP: {self.max_hp}", True, (255, 255, 255))
+
+        self.attack_power_text = stats_font.render(f"attack power: {self.attack_power}", True, (255, 255, 255))
+
+        self.agility_text = stats_font.render(f"agility points: {self.agility}", True, (255, 255, 255))
+
+        self.critical_damage_text = stats_font.render(f"critical damage chance: {self.critical_damage_chance}", True,
+                                                      (255, 255, 255))
+
+        self.available_points_text = stats_font.render(f"available points: {self.upgrade_points}", True,
+                                                       (255, 255, 255))
+
+        self.stats_texts_update()
+
+    def stats_texts_update(self):
+        self.max_hp_text = stats_font.render(f"max HP: {self.max_hp}", True, (255, 255, 255))
+
+        self.attack_power_text = stats_font.render(f"attack power: {self.attack_power}", True, (255, 255, 255))
+
+        self.agility_text = stats_font.render(f"agility points: {self.agility}", True, (255, 255, 255))
+
+        self.critical_damage_text = stats_font.render(f"critical damage chance: {self.critical_damage_chance}", True,
                                                       (255, 255, 255))
 
         self.available_points_text = stats_font.render(f"available points: {self.upgrade_points}", True,
                                                        (255, 255, 255))
 
     def level_up(self):
-        self.max_hp += 20
-        self.agility += 1
-        self.attack_power += 20
-
-    def agility_check(self, value):
-        if self.agility + value > 75:
-            self.agility = 75
-
-        else:
-            self.agility += value
+        self.max_hp_up()
+        self.agility_up()
+        self.attack_power_up()
+        self.critical_damage_up()
+        self.upgrade_points += 4
 
     def agility_up(self):
-        pass
+        if self.upgrade_points > 0:
+            if self.agility + 1 > 75:
+                pass
+            else:
+                self.agility += 1
+                self.upgrade_points -= 1
 
     def critical_damage_up(self):
-        pass
+        if self.upgrade_points > 0:
+            self.critical_damage_chance += 1
+            self.upgrade_points -= 1
 
     def max_hp_up(self):
-        pass
+        if self.upgrade_points > 0:
+            self.max_hp += 30
+            self.upgrade_points -= 1
 
     def attack_power_up(self):
-        pass
+        if self.upgrade_points > 0:
+            self.attack_power += 20
+            self.upgrade_points -= 1
 
     def draw(self):
+        self.stats_texts_update()
         WIN.blit(self.background, self.background_rectangle.topleft)
         WIN.blit(self.agility_button.image, self.agility_button.rectangle.topleft)
         WIN.blit(self.critical_damage_button.image, self.critical_damage_button.rectangle.topleft)

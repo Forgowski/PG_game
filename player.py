@@ -102,18 +102,21 @@ class Player(pygame.sprite.Sprite):
         return self.player_pos_x != self.prev_player_pos_x or self.player_pos_y != self.prev_player_pos_y or \
             cam_pos_x != prev_cam_pos_x or cam_pos_y != prev_cam_pos_y
 
-    def update_hp_bar(self, value):
+    def update_hp(self, value):
         if self.hp - value <= 0:
             self.hp -= value
-            self.hp_bar.width = self.hp
             self.is_alive = False
             return True
 
         self.hp -= value
-        self.hp_bar.width = self.hp
+
+    def update_hp_bar(self):
+        self.hp_bar.width = self.hp / self.stats.max_hp * 100
 
     def update_exp_bar(self, value):
         if self.exp + value >= self.exp_to_next_level:
+            self.stats.upgrade_points += 3
+            self.stats.level_up()
             self.exp_bar.width = 0
             self.lvl += 1
             self.exp = 0
@@ -132,9 +135,10 @@ class Player(pygame.sprite.Sprite):
     def revive(self):
         self.is_alive = True
         self.hp = 1
-        self.update_hp_bar(0)
+        self.update_hp(0)
 
     def draw(self, walk_or_not, revive_button):
+        self.update_hp_bar()
         WIN.blit(self.image, (self.rect.x, self.rect.y))
         WIN.blit(hp_text, (0, 10))
         WIN.blit(exp_text, (0, 30))
@@ -170,7 +174,7 @@ class Player(pygame.sprite.Sprite):
             enemy_object.update_hp(self.stats.attack_power)
             if enemy_object.is_alive:
                 if random.randint(1, 100) > self.stats.agility:
-                    self.update_hp_bar(enemy_object.attack_power)
+                    self.update_hp(enemy_object.attack_power)
                 if not self.is_alive:
                     enemy_object.heal()
             else:
@@ -183,10 +187,8 @@ class Player(pygame.sprite.Sprite):
         else:
             if self.hp + value > self.stats.max_hp:
                 self.hp = self.stats.max_hp
-                self.hp_bar.width = self.hp
             else:
                 self.hp = self.hp + value
-                self.hp_bar.width = self.hp
         return 1
 
     def handle_event(self, event, mouse_position):
