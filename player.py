@@ -17,14 +17,6 @@ wizard = [pygame.image.load("assets/player/wizard/wizard.png"),
           pygame.image.load("assets/player/wizard/wizard5.png"),
           ]
 
-enemy = [pygame.image.load("assets/player/enemy/enemy.png"),
-         pygame.image.load("assets/player/enemy/enemy2.png"),
-         pygame.image.load("assets/player/enemy/enemy3.png"),
-         pygame.image.load("assets/player/enemy/enemy4.png"),
-         pygame.image.load("assets/player/enemy/enemy5.png"),
-
-         ]
-
 knight_death = [pygame.image.load("assets/player/knight/knight_d.png"),
                 pygame.image.load("assets/player/knight/knight_d1.png"),
                 pygame.image.load("assets/player/knight/knight_d2.png"),
@@ -255,32 +247,3 @@ class Player(pygame.sprite.Sprite):
                     return True
 
         self.is_info_rectangle_visible = False
-
-
-class Enemy(pygame.sprite.Sprite):
-    def __init__(self):
-        super().__init__()
-        self.max_hp = opponents_level * 100
-        self.hp = opponents_level * 100
-        self.is_alive = True
-        self.attack_power = opponents_level * 5
-        self.images = enemy
-        self.current_image = 4
-        self.exp_drop = opponents_level * 20
-        self.gold_drop = opponents_level * 1
-        self.image = self.images[self.current_image]
-        self.rect = (self.image.get_rect())
-        self.rect.x = 0
-        self.rect.y = 0
-
-    def update_hp(self, value):
-        self.hp -= value
-        if self.hp < 0:
-            self.is_alive = False
-
-    def heal(self):
-        self.hp = self.max_hp
-
-    def change_position(self, x, y):
-        self.rect.x = x
-        self.rect.y = y

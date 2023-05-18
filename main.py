@@ -1,7 +1,8 @@
 import random
 
 from settings import *
-from player import Player, Enemy
+from player import Player
+from enemy import Enemy
 from button import Button
 
 pygame.init()
