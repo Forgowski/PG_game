@@ -151,7 +151,7 @@ def main():
             if event.type == pygame.QUIT:
                 run = False
             mouse_position = pygame.mouse.get_pos()
-            player.handle_event(event, mouse_position)
+            player.handle_event(event, mouse_position, sprite_group)
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if not player.is_alive:
                     revive_button.is_pressed(mouse_position)

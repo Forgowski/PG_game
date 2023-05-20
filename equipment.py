@@ -19,6 +19,7 @@ ITEMS_IMAGES = {"gold": pygame.transform.scale(pygame.image.load("assets/items/g
                                                  (ITEMS_WIDTH, ITEMS_HEIGHT)),
                 "ring_4": pygame.transform.scale(pygame.image.load("assets/items/ring_4.png"),
                                                  (ITEMS_WIDTH, ITEMS_HEIGHT)),
+                "level_up": pygame.image.load("assets/items/level_up.png"),
                 }
 
 
@@ -133,12 +134,14 @@ class Store:
             self.available_items.append(create_item("sword_2"))
             self.available_items.append(create_item("sword_3"))
             self.available_items.append(create_item("sword_4"))
+            self.available_items.append(create_item("level_up"))
         else:
             self.available_items.append(create_item("hp_potion"))
             self.available_items.append(create_item("ring_1"))
             self.available_items.append(create_item("ring_2"))
             self.available_items.append(create_item("ring_3"))
             self.available_items.append(create_item("ring_4"))
+            self.available_items.append(create_item("level_up"))
 
         self.is_visible = False
         self.rectangles = []
@@ -179,4 +182,6 @@ items = {
     "ring_2": ["ring_2", True, False, False, 100, 50, None, None],
     "ring_3": ["ring_3", True, False, False, 200, 500, None, None],
     "ring_4": ["ring_4", True, False, False, 500, 1500, None, None],
+    "level_up": ["level_up", False, False, True, 0, 10,
+                 "buy to level up enemies (be careful, this effect cannot be undone)", None]
 }

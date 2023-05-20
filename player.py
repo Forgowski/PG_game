@@ -112,7 +112,7 @@ class Player(pygame.sprite.Sprite):
             self.exp_bar.width = 0
             self.lvl += 1
             self.exp = 0
-            self.exp_to_next_level = 100 * 2 * self.lvl
+            self.exp_to_next_level *= 2
         self.exp += value
         self.exp_bar.width = int(self.exp / self.exp_to_next_level * 100)
 
@@ -183,7 +183,7 @@ class Player(pygame.sprite.Sprite):
                 self.hp = self.hp + value
         return 1
 
-    def handle_event(self, event, mouse_position):
+    def handle_event(self, event, mouse_position, enemies):
         # open equipment
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_e:
@@ -204,10 +204,19 @@ class Player(pygame.sprite.Sprite):
         # check that player want to buy item
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == pygame.BUTTON_RIGHT and self.store.is_visible:
+
                 for i in self.store.available_items:
+
                     if i.rectangle.collidepoint(mouse_position):
+
                         if self.equipment.gold >= i.price:
-                            if self.equipment.add_item(create_item(i.name)):
+
+                            if i.name == "level_up":
+                                for each in enemies:
+                                    each.level_up()
+                                self.equipment.subtract_gold(i.price)
+
+                            elif self.equipment.add_item(create_item(i.name)):
                                 self.stats.attack_power += i.attack_power
 
             # check that player want to use some item

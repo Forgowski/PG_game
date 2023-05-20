@@ -40,8 +40,8 @@ class Enemy(pygame.sprite.Sprite):
 
     def level_up(self):
         self.lvl += 1
-        self.max_hp = self.lvl * 100
-        self.hp = self.lvl * 100
-        self.attack_power = self.lvl * 10
-        self.exp_drop = self.lvl * 20
+        self.max_hp *= 1.5
+        self.hp *= 1.5
+        self.attack_power *= 1.5
+        self.exp_drop *= 1.5
         self.gold_drop = self.lvl * 1
