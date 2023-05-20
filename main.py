@@ -4,11 +4,12 @@ from settings import *
 from player import Player
 from enemy import Enemy
 from button import Button
+from sound import Sounds
 
 pygame.init()
 
 
-def draw_window(player, sprite_group, walk_or_not, revive_button, store):
+def draw_window(player, sprite_group, walk_or_not, revive_button, store, sound):
     WIN.blit(BACKGROUND, (cam_pos_x, cam_pos_y))
 
     sprite_group.draw(WIN)
@@ -18,6 +19,8 @@ def draw_window(player, sprite_group, walk_or_not, revive_button, store):
     store.draw()
 
     player.info_draw()
+
+    sound.draw()
 
     pygame.display.update()
 
@@ -139,6 +142,7 @@ def main():
 
     player = Player("knight")
     sprite_group = pygame.sprite.Group()
+    sound = Sounds()
 
     prev_cam_pos_x, prev_cam_pos_y = 0, 0
 
@@ -152,6 +156,8 @@ def main():
                 run = False
             mouse_position = pygame.mouse.get_pos()
             player.handle_event(event, mouse_position, sprite_group)
+            sound.handle_event(event)
+
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if not player.is_alive:
                     revive_button.is_pressed(mouse_position)
@@ -173,7 +179,7 @@ def main():
             # check if player is in shop zone
             store_zone(player, player.store)
 
-            draw_window(player, sprite_group, walk_or_not, revive_button, player.store)
+            draw_window(player, sprite_group, walk_or_not, revive_button, player.store, sound)
 
             # check if player is in heal zone
             heal_zone(player)
@@ -185,7 +191,7 @@ def main():
             # update previous camera position
             prev_cam_pos_x, prev_cam_pos_y = cam_pos_x, cam_pos_y
         else:
-            draw_window(player, sprite_group, False, revive_button, player.store)
+            draw_window(player, sprite_group, False, revive_button, player.store, sound)
 
     pygame.quit()
 
