@@ -1,4 +1,5 @@
 from settings import *
+from stats import Stats
 
 enemy = [pygame.image.load("assets/player/enemy/enemy.png"),
          pygame.image.load("assets/player/enemy/enemy2.png"),
@@ -13,10 +14,9 @@ class Enemy(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.lvl = 1
-        self.max_hp = 100
+        self.stats = Stats(100, 10, 20, 20)
         self.hp = 100
         self.is_alive = True
-        self.attack_power = 10
         self.images = enemy
         self.current_image = 4
         self.exp_drop = 20
@@ -32,7 +32,7 @@ class Enemy(pygame.sprite.Sprite):
             self.is_alive = False
 
     def heal(self):
-        self.hp = self.max_hp
+        self.hp = self.stats.max_hp
 
     def change_position(self, x, y):
         self.rect.x = x
@@ -40,8 +40,8 @@ class Enemy(pygame.sprite.Sprite):
 
     def level_up(self):
         self.lvl += 1
-        self.max_hp *= 1.5
+        self.stats.max_hp *= 1.5
         self.hp *= 1.5
-        self.attack_power *= 1.5
+        self.stats.attack_power *= 1.5
         self.exp_drop *= 1.5
         self.gold_drop = self.lvl * 1

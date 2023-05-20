@@ -107,7 +107,7 @@ class Player(pygame.sprite.Sprite):
 
     def update_exp_bar(self, value):
         if self.exp + value >= self.exp_to_next_level:
-            self.stats.upgrade_points += 3
+            self.stats.upgrade_points += 4
             self.stats.level_up()
             self.exp_bar.width = 0
             self.lvl += 1
@@ -163,10 +163,16 @@ class Player(pygame.sprite.Sprite):
 
     def fight_simulation(self, enemy_object):
         while self.is_alive and enemy_object.is_alive:
-            enemy_object.update_hp(self.stats.attack_power)
+            if random.randint(1, 100) > enemy_object.stats.agility:
+                enemy_object.update_hp(self.stats.attack_power)
+                if random.randint(1, 100) > enemy_object.stats.critical_damage_chance:
+                    enemy_object.update_hp(self.stats.attack_power)
             if enemy_object.is_alive:
                 if random.randint(1, 100) > self.stats.agility:
-                    self.update_hp(enemy_object.attack_power)
+                    self.update_hp(enemy_object.stats.attack_power)
+                    if random.randint(1, 100) > self.stats.critical_damage_chance:
+                        self.update_hp(enemy_object.stats.attack_power)
+
                 if not self.is_alive:
                     enemy_object.heal()
             else:
