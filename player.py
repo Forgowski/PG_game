@@ -184,7 +184,7 @@ class Player(pygame.sprite.Sprite):
         return 1
 
     def handle_event(self, event, mouse_position):
-        # open or close equipment
+        # open equipment
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_e:
                 if self.equipment.is_visible:
@@ -193,6 +193,7 @@ class Player(pygame.sprite.Sprite):
                     self.equipment.is_visible = True
                     self.stats.is_visible = False
 
+            # open stats
             if event.key == pygame.K_s:
                 if self.stats.is_visible:
                     self.stats.is_visible = False
@@ -207,6 +208,7 @@ class Player(pygame.sprite.Sprite):
                     if i.rectangle.collidepoint(mouse_position):
                         if self.equipment.gold >= i.price:
                             self.equipment.add_item(create_item(i.name))
+                            self.stats.attack_power += i.attack_power
 
             # check that player want to use some item
             if event.button == pygame.BUTTON_RIGHT and self.equipment.is_visible and not self.store.is_visible:
@@ -221,8 +223,11 @@ class Player(pygame.sprite.Sprite):
             if event.button == pygame.BUTTON_LEFT and self.equipment.is_visible and self.store.is_visible:
                 for i in self.equipment.items:
                     if i.rectangle.collidepoint(mouse_position):
+                        print(i.name)
                         self.equipment.sell_item(i)
+                        self.stats.attack_power -= i.attack_power
 
+            # upgrade stats
             if event.button == pygame.BUTTON_LEFT and self.stats.is_visible:
                 self.stats.event_handle(mouse_position)
 

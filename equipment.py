@@ -44,7 +44,7 @@ class Equipment:
 
             self.eq_rectangles.append(eq_rectangle)
             self.eq_background_rectangles.append(eq_background_rectangle)
-        self.add_gold(15)
+        self.add_gold(3000)
 
     def add_item(self, item):
         if len(self.items) == self.capacity:
@@ -88,10 +88,10 @@ class Equipment:
             each.update_amount_text()
             item_position = self.eq_rectangles[self.capacity - index - 1].topleft
             WIN.blit(each.item_image, item_position)
+            each.rectangle.topleft = item_position
             if each.stackable:
                 text_pos_x = item_position[0] + each.rectangle.width - each.amount_text.get_width()
                 text_pos_y = item_position[1] + each.rectangle.height - each.amount_text.get_height()
-                each.rectangle.topleft = item_position
                 WIN.blit(each.amount_text, (text_pos_x, text_pos_y))
 
 
