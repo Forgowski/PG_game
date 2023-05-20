@@ -26,7 +26,6 @@ ITEMS_HEIGHT = 32
 TILE_SIZE = BACKGROUND_X / 60
 
 OPPONENTS_NUMBER = 15
-opponents_level = 1
 
 CHARACTER_HEIGHT = 30
 CHARACTER_WIDTH = 20
@@ -37,8 +36,10 @@ cam_pos_x = 0
 cam_pos_y = 0
 
 pygame.font.init()
+stats_font = font.SysFont('georgia', 18)
 my_font = font.SysFont('Arial', 15)
 my_bold_font = font.SysFont('Arial', 15, bold=True)
+
 hp_text = my_font.render('HP', True, (255, 255, 255))
 exp_text = my_font.render('EXP', True, (255, 255, 255))
 

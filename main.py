@@ -1,7 +1,8 @@
 import random
 
 from settings import *
-from player import Player, Enemy
+from player import Player
+from enemy import Enemy
 from button import Button
 
 pygame.init()
@@ -142,14 +143,6 @@ def main():
     prev_cam_pos_x, prev_cam_pos_y = 0, 0
 
     revive_button = Button(100, 45, 30, 50, player.revive, "revive button")
-
-    text_position_x = (revive_button.rectangle.width - (
-        revive_button.rectangle_text.get_width())) / 2 + revive_button.rectangle.x
-
-    text_position_y = (revive_button.rectangle.height - (
-        revive_button.rectangle_text.get_height())) / 2 + revive_button.rectangle.y
-
-    revive_button.rectangle_text_position = (text_position_x, text_position_y)
 
     while run:
 

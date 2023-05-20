@@ -1,5 +1,7 @@
-from settings import *
-from equipment import Equipment, Store
+import random
+
+from equipment import *
+from stats import Stats
 
 knight = [pygame.image.load("assets/player/knight/knight.png"),
           pygame.image.load("assets/player/knight/knight2.png"),
@@ -8,20 +10,12 @@ knight = [pygame.image.load("assets/player/knight/knight.png"),
           pygame.image.load("assets/player/knight/knight5.png"),
           ]
 
-wizzard = [pygame.image.load("assets/player/wizzard/wizzard.png"),
-           pygame.image.load("assets/player/wizzard/wizzard2.png"),
-           pygame.image.load("assets/player/wizzard/wizzard3.png"),
-           pygame.image.load("assets/player/wizzard/wizzard4.png"),
-           pygame.image.load("assets/player/wizzard/wizzard5.png"),
-           ]
-
-enemy = [pygame.image.load("assets/player/enemy/enemy.png"),
-         pygame.image.load("assets/player/enemy/enemy2.png"),
-         pygame.image.load("assets/player/enemy/enemy3.png"),
-         pygame.image.load("assets/player/enemy/enemy4.png"),
-         pygame.image.load("assets/player/enemy/enemy5.png"),
-
-         ]
+wizard = [pygame.image.load("assets/player/wizard/wizard.png"),
+          pygame.image.load("assets/player/wizard/wizard2.png"),
+          pygame.image.load("assets/player/wizard/wizard3.png"),
+          pygame.image.load("assets/player/wizard/wizard4.png"),
+          pygame.image.load("assets/player/wizard/wizard5.png"),
+          ]
 
 knight_death = [pygame.image.load("assets/player/knight/knight_d.png"),
                 pygame.image.load("assets/player/knight/knight_d1.png"),
@@ -29,11 +23,11 @@ knight_death = [pygame.image.load("assets/player/knight/knight_d.png"),
                 pygame.image.load("assets/player/knight/knight_d3.png"),
                 ]
 
-wizzard_death = [pygame.image.load("assets/player/wizzard/wizzard_d.png"),
-                 pygame.image.load("assets/player/wizzard/wizzard_d1.png"),
-                 pygame.image.load("assets/player/wizzard/wizzard_d2.png"),
-                 pygame.image.load("assets/player/wizzard/wizzard_d3.png"),
-                 ]
+wizard_death = [pygame.image.load("assets/player/wizard/wizard_d.png"),
+                pygame.image.load("assets/player/wizard/wizard_d1.png"),
+                pygame.image.load("assets/player/wizard/wizard_d2.png"),
+                pygame.image.load("assets/player/wizard/wizard_d3.png"),
+                ]
 
 
 class Player(pygame.sprite.Sprite):
@@ -43,8 +37,8 @@ class Player(pygame.sprite.Sprite):
             self.images = knight
             self.death_images = knight_death
         else:
-            self.images = wizzard
-            self.death_images = wizzard_death
+            self.images = wizard
+            self.death_images = wizard_death
 
         self.hero_type = hero_type
         self.store = Store(self.hero_type)
@@ -56,10 +50,9 @@ class Player(pygame.sprite.Sprite):
         self.is_alive = True
         self.lvl = 1
 
-        self.max_hp = 100
+        self.stats = Stats(100, 50, 0, 0)
         self.hp = 100
         self.exp = 0
-        self.attack_power = 50
 
         self.hp_bar = pygame.Rect(30, 10, 100, 15)
         self.hp_background_bar = pygame.Rect(30, 10, 100, 15)
@@ -101,18 +94,21 @@ class Player(pygame.sprite.Sprite):
         return self.player_pos_x != self.prev_player_pos_x or self.player_pos_y != self.prev_player_pos_y or \
             cam_pos_x != prev_cam_pos_x or cam_pos_y != prev_cam_pos_y
 
-    def update_hp_bar(self, value):
+    def update_hp(self, value):
         if self.hp - value <= 0:
             self.hp -= value
-            self.hp_bar.width = self.hp
             self.is_alive = False
             return True
 
         self.hp -= value
-        self.hp_bar.width = self.hp
+
+    def update_hp_bar(self):
+        self.hp_bar.width = self.hp / self.stats.max_hp * 100
 
     def update_exp_bar(self, value):
         if self.exp + value >= self.exp_to_next_level:
+            self.stats.upgrade_points += 3
+            self.stats.level_up()
             self.exp_bar.width = 0
             self.lvl += 1
             self.exp = 0
@@ -131,9 +127,10 @@ class Player(pygame.sprite.Sprite):
     def revive(self):
         self.is_alive = True
         self.hp = 1
-        self.update_hp_bar(0)
+        self.update_hp(0)
 
     def draw(self, walk_or_not, revive_button):
+        self.update_hp_bar()
         WIN.blit(self.image, (self.rect.x, self.rect.y))
         WIN.blit(hp_text, (0, 10))
         WIN.blit(exp_text, (0, 30))
@@ -143,15 +140,21 @@ class Player(pygame.sprite.Sprite):
         pygame.draw.rect(WIN, GOLD, self.exp_bar)
         if walk_or_not:
             self.update()
+
         else:
             if self.is_alive:
                 self.image = self.images[3]
+
             else:
                 pygame.draw.rect(WIN, BLACK, revive_button.rectangle)
                 WIN.blit(revive_button.rectangle_text, revive_button.rectangle_text_position)
                 self.death_animation()
+
         if self.equipment.is_visible:
             self.equipment.draw()
+
+        if self.stats.is_visible:
+            self.stats.draw()
 
     def info_draw(self):
         if self.is_info_rectangle_visible and (self.store.is_visible or self.equipment.is_visible):
@@ -160,9 +163,10 @@ class Player(pygame.sprite.Sprite):
 
     def fight_simulation(self, enemy_object):
         while self.is_alive and enemy_object.is_alive:
-            enemy_object.update_hp(self.attack_power)
+            enemy_object.update_hp(self.stats.attack_power)
             if enemy_object.is_alive:
-                self.update_hp_bar(enemy_object.attack_power)
+                if random.randint(1, 100) > self.stats.agility:
+                    self.update_hp(enemy_object.attack_power)
                 if not self.is_alive:
                     enemy_object.heal()
             else:
@@ -170,73 +174,81 @@ class Player(pygame.sprite.Sprite):
                 self.equipment.add_gold(enemy_object.gold_drop)
 
     def heal(self, value):
-        if self.hp == self.max_hp:
+        if self.hp == self.stats.max_hp:
             return 0
         else:
-            if self.hp + value > self.max_hp:
-                self.hp = self.max_hp
-                self.hp_bar.width = self.hp
+            if self.hp + value > self.stats.max_hp:
+                self.hp = self.stats.max_hp
             else:
                 self.hp = self.hp + value
-                self.hp_bar.width = self.hp
+        return 1
 
     def handle_event(self, event, mouse_position):
+        # open equipment
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_e:
-                self.equipment.change_visibility()
+                if self.equipment.is_visible:
+                    self.equipment.is_visible = False
+                else:
+                    self.equipment.is_visible = True
+                    self.stats.is_visible = False
 
+            # open stats
+            if event.key == pygame.K_s:
+                if self.stats.is_visible:
+                    self.stats.is_visible = False
+                else:
+                    self.stats.is_visible = True
+                    self.equipment.is_visible = False
+
+        # check that player want to buy item
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == pygame.BUTTON_RIGHT and self.store.is_visible:
                 for i in self.store.available_items:
                     if i.rectangle.collidepoint(mouse_position):
-                        if self.equipment.gold > i.price:
-                            self.equipment.add_item(i)
+                        if self.equipment.gold >= i.price:
+                            self.equipment.add_item(create_item(i.name))
+                            self.stats.attack_power += i.attack_power
 
+            # check that player want to use some item
+            if event.button == pygame.BUTTON_RIGHT and self.equipment.is_visible and not self.store.is_visible:
+                for i in self.equipment.items:
+                    if i.rectangle.collidepoint(mouse_position) and i.use is not None:
+                        if i.use(self):
+                            i = self.equipment.items.index(i)
+                            self.equipment.items[i].amount -= 1
+                            self.equipment.check_items_amount()
+
+            # check that player want sell some item
+            if event.button == pygame.BUTTON_LEFT and self.equipment.is_visible and self.store.is_visible:
+                for i in self.equipment.items:
+                    if i.rectangle.collidepoint(mouse_position):
+                        print(i.name)
+                        self.equipment.sell_item(i)
+                        self.stats.attack_power -= i.attack_power
+
+            # upgrade stats
+            if event.button == pygame.BUTTON_LEFT and self.stats.is_visible:
+                self.stats.event_handle(mouse_position)
+
+        # Show info box for store items
         if self.store.is_visible:
             for i in self.store.available_items:
-                if self.check_collide_points_for_info(i, mouse_position):
-                    break
+                if i.rectangle.collidepoint(mouse_position):
+                    i.info_rectangle.bottomright = mouse_position
+                    self.info_rectangle = i.info_rectangle
+                    self.info_text = i.info_text
+                    self.is_info_rectangle_visible = True
+                    return True
 
+        # Show info box for equipment items
         if self.equipment.is_visible:
             for i in self.equipment.items:
-                if self.check_collide_points_for_info(i, mouse_position):
-                    break
+                if i.rectangle.collidepoint(mouse_position):
+                    i.info_rectangle.bottomright = mouse_position
+                    self.info_rectangle = i.info_rectangle
+                    self.info_text = i.info_text
+                    self.is_info_rectangle_visible = True
+                    return True
 
-    def check_collide_points_for_info(self, i, mouse_position):
-        if i.rectangle.collidepoint(mouse_position):
-            i.info_rectangle.bottomright = mouse_position
-            self.info_rectangle = i.info_rectangle
-            self.info_text = i.info_text
-            self.is_info_rectangle_visible = True
-            return True
-        else:
-            self.is_info_rectangle_visible = False
-
-
-class Enemy(pygame.sprite.Sprite):
-    def __init__(self):
-        super().__init__()
-        self.max_hp = opponents_level * 100
-        self.hp = opponents_level * 100
-        self.is_alive = True
-        self.attack_power = opponents_level * 5
-        self.images = enemy
-        self.current_image = 4
-        self.exp_drop = opponents_level * 20
-        self.gold_drop = opponents_level * 1
-        self.image = self.images[self.current_image]
-        self.rect = (self.image.get_rect())
-        self.rect.x = 0
-        self.rect.y = 0
-
-    def update_hp(self, value):
-        self.hp -= value
-        if self.hp < 0:
-            self.is_alive = False
-
-    def heal(self):
-        self.hp = self.max_hp
-
-    def change_position(self, x, y):
-        self.rect.x = x
-        self.rect.y = y
+        self.is_info_rectangle_visible = False

@@ -22,6 +22,11 @@ ITEMS_IMAGES = {"gold": pygame.transform.scale(pygame.image.load("assets/items/g
                 }
 
 
+def create_item(name):
+    item = Item(*items[name])
+    return item
+
+
 class Equipment:
     def __init__(self):
         self.items = []
@@ -39,36 +44,40 @@ class Equipment:
 
             self.eq_rectangles.append(eq_rectangle)
             self.eq_background_rectangles.append(eq_background_rectangle)
-        self.add_gold(15)
+        self.add_gold(3000)
 
     def add_item(self, item):
         if len(self.items) == self.capacity:
             pass
-        elif item in self.items and item.stackable:
+        elif item.stackable and any(each.name == item.name for each in self.items):
             for each in self.items:
                 if each.name == item.name:
                     each.amount += 1
-                    each.update_amount_text()
                     self.subtract_gold(item.price)
         else:
-            self.items.append(items[item.name])
+            self.items.append(item)
+            self.items[-1].amount += 1
             self.subtract_gold(item.price)
 
     def add_gold(self, value):
         self.gold += value
         for i in range(value):
-            self.add_item(items["gold"])
+            self.add_item(create_item("gold"))
 
     def subtract_gold(self, value):
         self.gold -= value
         self.items[0].amount = self.gold
-        self.items[0].update_amount_text()
 
-    def delete_item(self):
-        pass
+    def sell_item(self, item):
+        if item.sellable and item in self.items:
+            self.add_gold(item.price // 2)
+            item.amount -= 1
+            self.check_items_amount()
 
-    def change_visibility(self):
-        self.is_visible = not self.is_visible
+    def check_items_amount(self):
+        for i in self.items:
+            if i.amount == 0 and i.name != "gold":
+                self.items.remove(i)
 
     def draw(self):
         for each in self.eq_background_rectangles:
@@ -76,17 +85,18 @@ class Equipment:
         for each in self.eq_rectangles:
             pygame.draw.rect(WIN, BROWN, each)
         for index, each in enumerate(self.items):
+            each.update_amount_text()
             item_position = self.eq_rectangles[self.capacity - index - 1].topleft
             WIN.blit(each.item_image, item_position)
+            each.rectangle.topleft = item_position
             if each.stackable:
                 text_pos_x = item_position[0] + each.rectangle.width - each.amount_text.get_width()
                 text_pos_y = item_position[1] + each.rectangle.height - each.amount_text.get_height()
-                each.rectangle.topleft = item_position
                 WIN.blit(each.amount_text, (text_pos_x, text_pos_y))
 
 
 class Item:
-    def __init__(self, name, sellable=True, usable=True, stackable=True, attack_power=0, price=0, description=""):
+    def __init__(self, name, sellable, usable, stackable, attack_power, price, description, use):
         self.name = name
         self.price = price
         self.attack_power = attack_power
@@ -95,7 +105,8 @@ class Item:
         self.sellable = sellable
         self.usable = usable
         self.stackable = stackable
-        self.amount = 1
+        self.use = use
+        self.amount = 0
         self.amount_text = my_bold_font.render(str(self.amount), True, (0, 255, 0))
         self.description = description
         if self.attack_power == 0:
@@ -114,17 +125,18 @@ class Store:
     def __init__(self, hero_type):
         self.available_items = []
         if hero_type == "knight":
-            self.available_items.append(items["hp_potion"])
-            self.available_items.append(items["sword_1"])
-            self.available_items.append(items["sword_2"])
-            self.available_items.append(items["sword_3"])
-            self.available_items.append(items["sword_4"])
+            self.available_items.append(create_item("hp_potion"))
+            self.available_items.append(create_item("sword_1"))
+            self.available_items.append(create_item("sword_2"))
+            self.available_items.append(create_item("sword_3"))
+            self.available_items.append(create_item("sword_4"))
         else:
-            self.available_items.append(items["hp_potion"])
-            self.available_items.append(items["ring_1"])
-            self.available_items.append(items["ring_2"])
-            self.available_items.append(items["ring_3"])
-            self.available_items.append(items["ring_4"])
+            self.available_items.append(create_item("hp_potion"))
+            self.available_items.append(create_item("ring_1"))
+            self.available_items.append(create_item("ring_2"))
+            self.available_items.append(create_item("ring_3"))
+            self.available_items.append(create_item("ring_4"))
+
         self.is_visible = False
         self.rectangles = []
         self.background_rectangles = []
@@ -149,15 +161,19 @@ class Store:
                 each.rectangle.topleft = item_position
 
 
+def use_hp_potion(player):
+    return player.heal(50)
+
+
 items = {
-    "gold": Item("gold", False, False, True, description="use to buy items"),
-    "hp_potion": Item("hp_potion", True, True, True, price=2, description="heal 50hp"),
-    "sword_1": Item("sword_1", True, True, False, 20, 30),
-    "sword_2": Item("sword_2", True, True, False, 100, 150),
-    "sword_3": Item("sword_3", True, True, False, 200, 500),
-    "sword_4": Item("sword_4", True, True, False, 500, 1500),
-    "ring_1": Item("ring_1", True, True, False, 20, 30),
-    "ring_2": Item("ring_2", True, True, False, 100, 50),
-    "ring_3": Item("ring_3", True, True, False, 200, 500),
-    "ring_4": Item("ring_4", True, True, False, 500, 1500),
+    "gold": ["gold", False, False, True, 0, 0, "use to buy items", None],
+    "hp_potion": ["hp_potion", True, True, True, 0, 2, "heal 50hp", use_hp_potion],
+    "sword_1": ["sword_1", True, False, False, 20, 30, None, None],
+    "sword_2": ["sword_2", True, False, False, 100, 150, None, None],
+    "sword_3": ["sword_3", True, False, False, 200, 500, None, None],
+    "sword_4": ["sword_4", True, False, False, 500, 1500, None, None],
+    "ring_1": ["ring_1", True, False, False, 20, 30, None, None],
+    "ring_2": ["ring_2", True, False, False, 100, 50, None, None],
+    "ring_3": ["ring_3", True, False, False, 200, 500, None, None],
+    "ring_4": ["ring_4", True, False, False, 500, 1500, None, None],
 }
