@@ -207,8 +207,8 @@ class Player(pygame.sprite.Sprite):
                 for i in self.store.available_items:
                     if i.rectangle.collidepoint(mouse_position):
                         if self.equipment.gold >= i.price:
-                            self.equipment.add_item(create_item(i.name))
-                            self.stats.attack_power += i.attack_power
+                            if self.equipment.add_item(create_item(i.name)):
+                                self.stats.attack_power += i.attack_power
 
             # check that player want to use some item
             if event.button == pygame.BUTTON_RIGHT and self.equipment.is_visible and not self.store.is_visible:

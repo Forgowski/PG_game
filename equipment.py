@@ -48,16 +48,19 @@ class Equipment:
 
     def add_item(self, item):
         if len(self.items) == self.capacity:
-            pass
+            return 0
+
         elif item.stackable and any(each.name == item.name for each in self.items):
             for each in self.items:
                 if each.name == item.name:
                     each.amount += 1
                     self.subtract_gold(item.price)
+                    return 1
         else:
             self.items.append(item)
             self.items[-1].amount += 1
             self.subtract_gold(item.price)
+            return 1
 
     def add_gold(self, value):
         self.gold += value
