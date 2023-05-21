@@ -63,6 +63,8 @@ class Player(pygame.sprite.Sprite):
         self.is_info_rectangle_visible = False
         self.info_text = None
 
+        self.is_simulation_active = True
+
         self.current_image = 0
         self.current_death_image = 0
         self.image = self.images[self.current_image]
@@ -179,6 +181,12 @@ class Player(pygame.sprite.Sprite):
                 self.update_exp_bar(enemy_object.exp_drop)
                 self.equipment.add_gold(enemy_object.gold_drop)
 
+    def turn_on_off_simulation(self):
+        if self.is_simulation_active:
+            self.is_simulation_active = False
+        else:
+            self.is_simulation_active = True
+            
     def heal(self, value):
         if self.hp == self.stats.max_hp:
             return 0
