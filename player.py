@@ -2,6 +2,7 @@ import random
 
 from equipment import *
 from stats import Stats
+from button import Button
 
 knight = [pygame.image.load("assets/player/knight/knight.png"),
           pygame.image.load("assets/player/knight/knight2.png"),
@@ -28,6 +29,9 @@ wizard_death = [pygame.image.load("assets/player/wizard/wizard_d.png"),
                 pygame.image.load("assets/player/wizard/wizard_d2.png"),
                 pygame.image.load("assets/player/wizard/wizard_d3.png"),
                 ]
+
+active_png = pygame.transform.scale(pygame.image.load("assets/player/gui/active.png"), (15, 15))
+check_box_png = pygame.transform.scale(pygame.image.load("assets/player/gui/box.png"), (25, 25))
 
 
 class Player(pygame.sprite.Sprite):
@@ -63,7 +67,9 @@ class Player(pygame.sprite.Sprite):
         self.is_info_rectangle_visible = False
         self.info_text = None
 
+        self.simulation_button = Button(25, 25, 10, HEIGHT - 70, self.turn_on_off_simulation, None, check_box_png)
         self.is_simulation_active = True
+        self.simulation_text = my_bold_font.render('fight simulation', True, (0, 0, 0))
 
         self.current_image = 0
         self.current_death_image = 0
@@ -158,6 +164,14 @@ class Player(pygame.sprite.Sprite):
         if self.stats.is_visible:
             self.stats.draw()
 
+        WIN.blit(self.simulation_button.image, self.simulation_button.rectangle.topleft)
+        WIN.blit(self.simulation_text,
+                 (self.simulation_button.rectangle.topright[0] + 5, self.simulation_button.rectangle.topright[1] + 3))
+
+        if self.is_simulation_active:
+            WIN.blit(active_png,
+                     (self.simulation_button.rectangle.topleft[0] + 5, self.simulation_button.rectangle.topleft[1] + 5))
+
     def info_draw(self):
         if self.is_info_rectangle_visible and (self.store.is_visible or self.equipment.is_visible):
             pygame.draw.rect(WIN, BLACK, self.info_rectangle)
@@ -186,7 +200,7 @@ class Player(pygame.sprite.Sprite):
             self.is_simulation_active = False
         else:
             self.is_simulation_active = True
-            
+
     def heal(self, value):
         if self.hp == self.stats.max_hp:
             return 0
@@ -253,6 +267,9 @@ class Player(pygame.sprite.Sprite):
             # upgrade stats
             if event.button == pygame.BUTTON_LEFT and self.stats.is_visible:
                 self.stats.event_handle(mouse_position)
+
+            if event.button == pygame.BUTTON_LEFT:
+                self.simulation_button.is_pressed(mouse_position)
 
         # Show info box for store items
         if self.store.is_visible:
