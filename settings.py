@@ -12,6 +12,7 @@ BACKGROUND_Y = BACKGROUND_X * 2 / 3
 BACKGROUND_SIZE = (BACKGROUND_X, BACKGROUND_Y)
 background = pygame.image.load("assets/map/map.png").convert()
 BACKGROUND = pygame.transform.scale(background, BACKGROUND_SIZE)
+BUTTON_PNG = pygame.transform.scale(pygame.image.load("assets/player/gui/button.png"), (100, 25))
 
 RED = (255, 0, 0)
 CLARET = (150, 0, 100)

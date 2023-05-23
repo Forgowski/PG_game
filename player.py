@@ -154,7 +154,7 @@ class Player(pygame.sprite.Sprite):
                 self.image = self.images[3]
 
             else:
-                pygame.draw.rect(WIN, BLACK, revive_button.rectangle)
+                WIN.blit(revive_button.image, revive_button.rectangle.topleft)
                 WIN.blit(revive_button.rectangle_text, revive_button.rectangle_text_position)
                 self.death_animation()
 

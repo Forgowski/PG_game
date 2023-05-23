@@ -146,7 +146,7 @@ def main():
 
     prev_cam_pos_x, prev_cam_pos_y = 0, 0
 
-    revive_button = Button(100, 45, 30, 50, player.revive, "revive button")
+    revive_button = Button(100, 45, 30, 50, player.revive, "revive button", BUTTON_PNG)
 
     while run:
 

@@ -10,8 +10,8 @@ class Button:
         self.text_position_x = (self.rectangle.width - (
             self.rectangle_text.get_width())) / 2 + self.rectangle.x
 
-        self.text_position_y = (self.rectangle.height - (
-            self.rectangle_text.get_height())) / 2 + self.rectangle.y
+        self.text_position_y = (self.rectangle.height / 2 - (
+            self.rectangle_text.get_height())) + self.rectangle.y
 
         self.rectangle_text_position = (self.text_position_x, self.text_position_y)
         self.image = image
