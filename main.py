@@ -93,7 +93,7 @@ def check_map_collision(cord_x, cord_y):
 def is_enemy_collision(player, sprites_group):
     for sprite in sprites_group:
         if pygame.sprite.collide_rect(player, sprite):
-            # fight = Fight(player, sprite)
+            fight = Fight(player, sprite)
             player.fight_simulation(sprite)
             if not sprite.is_alive:
                 sprites_group.remove(sprite)

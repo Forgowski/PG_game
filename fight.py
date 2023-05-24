@@ -14,6 +14,8 @@ class Fight:
         self.first_strike = random.randint(0, 1)
         self.attack_button = Button(100, 25, WIDTH / 4, HEIGHT - 45, self.attack(self.player, self.enemy), "Attack",
                                     BUTTON_PNG)
+        self.hp_potion_button = Button(100, 25, WIDTH / 4 * 3, HEIGHT - 45, self.attack(self.player, self.enemy),
+                                       "HP potion", BUTTON_PNG)
         self.is_player_turn = self.first_strike
         self.main_loop()
 
@@ -21,6 +23,8 @@ class Fight:
         WIN.blit(FIGHT_BACKGROUND, (0, 0))
         WIN.blit(self.attack_button.image, self.attack_button.rectangle.topleft)
         WIN.blit(self.attack_button.rectangle_text, self.attack_button.rectangle_text_position)
+        WIN.blit(self.hp_potion_button.image, self.hp_potion_button.rectangle.topleft)
+        WIN.blit(self.hp_potion_button.rectangle_text, self.hp_potion_button.rectangle_text_position)
         pygame.display.update()
 
     def handle_event(self):
@@ -42,4 +46,3 @@ class Fight:
                 if event.type == pygame.QUIT:
                     self.is_fighting = False
             self.draw()
-
