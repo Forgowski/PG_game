@@ -30,7 +30,7 @@ class Enemy(pygame.sprite.Sprite):
 
     def update_hp(self, value):
         self.hp -= value
-        if self.hp < 0:
+        if self.hp <= 0:
             self.is_alive = False
 
     def update_hp_bar(self):
