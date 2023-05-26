@@ -98,6 +98,10 @@ class Equipment:
                 text_pos_y = item_position[1] + each.rectangle.height - each.amount_text.get_height()
                 WIN.blit(each.amount_text, (text_pos_x, text_pos_y))
 
+    def item_used(self, i):
+        i = self.items.index(i)
+        self.items[i].amount -= 1
+        self.check_items_amount()
 
 class Item:
     def __init__(self, name, sellable, usable, stackable, attack_power, price, description, use):

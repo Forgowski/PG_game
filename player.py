@@ -248,13 +248,11 @@ class Player(pygame.sprite.Sprite):
                                 self.stats.attack_power += i.attack_power
 
             # check that player want to use some item
-            if event.button == pygame.BUTTON_RIGHT and self.equipment.is_visible and not self.store.is_visible:
+            if event.button == pygame.BUTTON_RIGHT and self.equipment.is_visible:
                 for i in self.equipment.items:
                     if i.rectangle.collidepoint(mouse_position) and i.use is not None:
                         if i.use(self):
-                            i = self.equipment.items.index(i)
-                            self.equipment.items[i].amount -= 1
-                            self.equipment.check_items_amount()
+                            self.equipment.item_used(i)
 
             # check that player want sell some item
             if event.button == pygame.BUTTON_LEFT and self.equipment.is_visible and self.store.is_visible:

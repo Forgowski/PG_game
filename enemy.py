@@ -16,6 +16,8 @@ class Enemy(pygame.sprite.Sprite):
         self.lvl = 1
         self.stats = Stats(100, 10, 20, 20)
         self.hp = 100
+        self.hp_bar = pygame.Rect(WIDTH - 130, 10, 100, 15)
+        self.hp_background_bar = pygame.Rect(WIDTH - 130, 10, 100, 15)
         self.is_alive = True
         self.images = enemy
         self.current_image = 4
@@ -30,6 +32,9 @@ class Enemy(pygame.sprite.Sprite):
         self.hp -= value
         if self.hp < 0:
             self.is_alive = False
+
+    def update_hp_bar(self):
+        self.hp_bar.width = self.hp / self.stats.max_hp * 100
 
     def heal(self):
         self.hp = self.stats.max_hp
