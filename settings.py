@@ -40,6 +40,7 @@ pygame.font.init()
 stats_font = font.SysFont('georgia', 18)
 my_font = font.SysFont('Arial', 15)
 my_bold_font = font.SysFont('Arial', 15, bold=True)
+menu_bold_font = font.SysFont('Arial', 25, bold=True)
 
 hp_text = my_font.render('HP', True, (255, 255, 255))
 exp_text = my_font.render('EXP', True, (255, 255, 255))

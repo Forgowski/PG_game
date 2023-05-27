@@ -6,6 +6,7 @@ from enemy import Enemy
 from button import Button
 from sound import Sounds
 from fight import Fight
+from menu import Menu
 
 pygame.init()
 
@@ -95,7 +96,8 @@ def is_enemy_collision(player, sprites_group):
         if pygame.sprite.collide_rect(player, sprite):
             if not player.is_simulation_active:
                 Fight(player, sprite)
-            player.fight_simulation(sprite)
+            else:
+                player.fight_simulation(sprite)
             if not sprite.is_alive:
                 sprites_group.remove(sprite)
             return True
@@ -150,6 +152,8 @@ def main():
     prev_cam_pos_x, prev_cam_pos_y = 0, 0
 
     revive_button = Button(100, 25, 30, 50, player.revive, "revive button", BUTTON_PNG)
+
+    Menu()
 
     while run:
 
