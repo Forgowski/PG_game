@@ -35,6 +35,9 @@ class Fight:
         self.animation_counter = 0
         self.animation_cords = None
 
+        self.dmg_or_miss_text = my_bold_font.render("", True, (255, 255, 255))
+        self.dmg_or_miss_text_position = (0, 0)
+
         self.main_loop()
 
     def draw(self):
@@ -55,6 +58,7 @@ class Fight:
         if self.animation_counter > 0:
             self.sword_attack_animation()
             WIN.blit(self.animation_frame, self.animation_cords)
+            WIN.blit(self.dmg_or_miss_text, self.dmg_or_miss_text_position)
 
         pygame.display.update()
 
@@ -76,6 +80,7 @@ class Fight:
             self.player.equipment.item_used(self.player_potion)
             self.is_player_turn = 0
 
+    # check if the player has potions
     def check_potions(self):
         potion_number = 0
         for item in self.player.equipment.items:
@@ -88,20 +93,29 @@ class Fight:
             return potion_number
 
     def attack(self, striker, target):
+        # check if previous animation has finished
         if self.animation_counter == 0:
             if self.is_player_turn:
                 self.animation_cords = self.enemy_position
+                self.dmg_or_miss_text_position = (self.enemy_position[0] + 30, self.enemy_position[1])
             else:
                 self.animation_cords = self.player_position
+                self.dmg_or_miss_text_position = (self.player_position[0] + 30, self.player_position[1])
             self.animation_counter += 4
+
+            # check if the target dodges the attack
             if random.randint(1, 100) > target.stats.agility:
                 target.update_hp(striker.stats.attack_power)
+                self.dmg_or_miss_text = my_bold_font.render(f"{striker.stats.attack_power}", True, (255, 255, 255))
+
                 if random.randint(1, 100) <= striker.stats.critical_damage_chance:
                     # critical damage
                     target.update_hp(striker.stats.attack_power)
+                    self.dmg_or_miss_text = my_bold_font.render(f"{striker.stats.attack_power * 2}", True,
+                                                                (255, 0, 0))
             # miss
             else:
-                pass
+                self.dmg_or_miss_text = my_bold_font.render("MISS", True, (255, 255, 255))
             self.is_player_turn = not self.is_player_turn
 
     @staticmethod
@@ -124,9 +138,14 @@ class Fight:
                 if event.type == pygame.QUIT:
                     self.is_fighting = False
                 self.handle_event(event)
-            if not self.is_player_turn:
+            if not self.is_player_turn and self.player.is_alive and self.enemy.is_alive:
                 self.attack(self.enemy, self.player)
 
             if not self.player.is_alive or not self.enemy.is_alive and self.animation_counter == 0:
+                if self.player.is_alive:
+                    self.player.update_exp_bar(self.enemy.exp_drop)
+                    self.player.equipment.add_gold(self.enemy.gold_drop)
+                else:
+                    self.enemy.heal()
                 self.is_fighting = False
             self.draw()
