@@ -11,7 +11,7 @@ enemy = [pygame.image.load("assets/player/enemy/enemy.png"),
 
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, level):
         super().__init__()
         self.lvl = 1
         self.stats = Stats(100, 10, 20, 20)
@@ -27,6 +27,8 @@ class Enemy(pygame.sprite.Sprite):
         self.rect = (self.image.get_rect())
         self.rect.x = 0
         self.rect.y = 0
+        while self.lvl < level:
+            self.level_up()
 
     def update_hp(self, value):
         self.hp -= value

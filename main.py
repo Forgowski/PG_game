@@ -12,7 +12,7 @@ from save import save_game
 pygame.init()
 
 
-def draw_window(player, sprite_group, walk_or_not, revive_button, store, sound):
+def draw_window(player, sprite_group, walk_or_not, revive_button, store, sound, cam_pos_x, cam_pos_y):
     WIN.blit(BACKGROUND, (cam_pos_x, cam_pos_y))
 
     sprite_group.draw(WIN)
@@ -28,9 +28,7 @@ def draw_window(player, sprite_group, walk_or_not, revive_button, store, sound):
     pygame.display.update()
 
 
-def camera_moves(direction):
-    global cam_pos_x, cam_pos_y
-
+def camera_moves(direction, cam_pos_x, cam_pos_y):
     if direction == "up" and cam_pos_y + CAM_SPEED <= 0:
         cam_pos_y += CAM_SPEED
 
@@ -43,52 +41,54 @@ def camera_moves(direction):
     if direction == "left" and cam_pos_x + CAM_SPEED <= 0:
         cam_pos_x += CAM_SPEED
 
+    return cam_pos_x, cam_pos_y
 
-def player_control(player_pos_x, player_pos_y, keys):
+
+def player_control(player_pos_x, player_pos_y, keys, cam_pos_x, cam_pos_y):
     if keys[pygame.K_UP] and player_pos_y - CAM_SPEED >= 0:
-        if not check_map_collision(player_pos_x, player_pos_y - CAM_SPEED):
+        if not check_map_collision(player_pos_x, player_pos_y - CAM_SPEED, cam_pos_x, cam_pos_y):
             player_pos_y -= CAM_SPEED
 
     if player_pos_y < CAM_MARGIN and keys[pygame.K_UP]:
-        if not check_map_collision(player_pos_x, player_pos_y - CAM_SPEED):
-            camera_moves("up")
+        if not check_map_collision(player_pos_x, player_pos_y - CAM_SPEED, cam_pos_x, cam_pos_y):
+            cam_pos_x, cam_pos_y = camera_moves("up", cam_pos_x, cam_pos_y)
 
     if keys[pygame.K_DOWN] and player_pos_y + CAM_SPEED + CHARACTER_HEIGHT <= HEIGHT:
-        if not check_map_collision(player_pos_x, player_pos_y + CAM_SPEED):
+        if not check_map_collision(player_pos_x, player_pos_y + CAM_SPEED, cam_pos_x, cam_pos_y):
             player_pos_y += CAM_SPEED
 
     if player_pos_y > HEIGHT - CAM_MARGIN and keys[pygame.K_DOWN]:
-        if not check_map_collision(player_pos_x, player_pos_y + CAM_SPEED):
-            camera_moves("down")
+        if not check_map_collision(player_pos_x, player_pos_y + CAM_SPEED, cam_pos_x, cam_pos_y):
+            cam_pos_x, cam_pos_y = camera_moves("down", cam_pos_x, cam_pos_y)
 
     if keys[pygame.K_RIGHT] and player_pos_x + CAM_SPEED + CHARACTER_WIDTH <= WIDTH:
-        if not check_map_collision(player_pos_x + CAM_SPEED, player_pos_y):
+        if not check_map_collision(player_pos_x + CAM_SPEED, player_pos_y, cam_pos_x, cam_pos_y):
             player_pos_x += CAM_SPEED
 
     if player_pos_x > WIDTH - CAM_MARGIN and keys[pygame.K_RIGHT]:
-        if not check_map_collision(player_pos_x + CAM_SPEED, player_pos_y):
-            camera_moves("right")
+        if not check_map_collision(player_pos_x + CAM_SPEED, player_pos_y, cam_pos_x, cam_pos_y):
+            cam_pos_x, cam_pos_y = camera_moves("right", cam_pos_x, cam_pos_y)
 
     if keys[pygame.K_LEFT] and player_pos_x - CAM_SPEED >= 0:
-        if not check_map_collision(player_pos_x - CAM_SPEED, player_pos_y):
+        if not check_map_collision(player_pos_x - CAM_SPEED, player_pos_y, cam_pos_x, cam_pos_y):
             player_pos_x -= CAM_SPEED
 
     if player_pos_x < CAM_MARGIN and keys[pygame.K_LEFT]:
-        if not check_map_collision(player_pos_x - CAM_SPEED, player_pos_y):
-            camera_moves("left")
+        if not check_map_collision(player_pos_x - CAM_SPEED, player_pos_y, cam_pos_x, cam_pos_y):
+            cam_pos_x, cam_pos_y = camera_moves("left", cam_pos_x, cam_pos_y)
 
-    return player_pos_x, player_pos_y
+    return player_pos_x, player_pos_y, cam_pos_x, cam_pos_y
 
 
-def tile_cords(cord_x, cord_y):
+def tile_cords(cord_x, cord_y, cam_pos_x, cam_pos_y):
     x = int((cord_x - cam_pos_x) / TILE_SIZE)
     y = int((cord_y - cam_pos_y) / TILE_SIZE)
     return x, y
 
 
 # looking for collision with maps object
-def check_map_collision(cord_x, cord_y):
-    x, y = tile_cords(cord_x, cord_y)
+def check_map_collision(cord_x, cord_y, cam_pos_x, cam_pos_y):
+    x, y = tile_cords(cord_x, cord_y, cam_pos_x, cam_pos_y)
     return map_array[x, y]
 
 
@@ -105,14 +105,14 @@ def is_enemy_collision(player, sprites_group):
     return False
 
 
-def heal_zone(player):
-    x, y = tile_cords(player.player_pos_x, player.prev_player_pos_y)
+def heal_zone(player, cam_pos_x, cam_pos_y):
+    x, y = tile_cords(player.player_pos_x, player.prev_player_pos_y, cam_pos_x, cam_pos_y)
     if (x, y) in MAP_HEAL_ZONE:
         player.heal(0.1)
 
 
-def store_zone(player, store):
-    x, y = tile_cords(player.player_pos_x, player.player_pos_y)
+def store_zone(player, store, cam_pos_x, cam_pos_y):
+    x, y = tile_cords(player.player_pos_x, player.player_pos_y, cam_pos_x, cam_pos_y)
     if x == 27 and y == 15:
         store.is_visible = True
     else:
@@ -123,13 +123,13 @@ def draw_fight_scene():
     pass
 
 
-def enemy_update(sprite_group, prev_cam_pos_x, prev_cam_pos_y):
+def enemy_update(sprite_group, prev_cam_pos_x, prev_cam_pos_y, opponents_lvl, cam_pos_x, cam_pos_y):
     while len(sprite_group) < OPPONENTS_NUMBER:
-        enemy = Enemy()
+        enemy = Enemy(opponents_lvl)
         x, y = random.randint(0 + cam_pos_x, BACKGROUND_X - 200 + cam_pos_x), \
             random.randint(0 + cam_pos_y, BACKGROUND_Y - 200 + cam_pos_y)
 
-        while check_map_collision(x, y):
+        while check_map_collision(x, y, cam_pos_x, cam_pos_y):
             x, y = random.randint(0 + cam_pos_x, BACKGROUND_X - 200 + cam_pos_x), \
                 random.randint(0 + cam_pos_y, BACKGROUND_Y - 200 + cam_pos_y)
 
@@ -148,6 +148,7 @@ def main():
     sprite_group = pygame.sprite.Group()
     sound = Sounds()
 
+    cam_pos_x, cam_pos_y = 0, 0
     prev_cam_pos_x, prev_cam_pos_y = 0, 0
 
     menu = Menu()
@@ -176,7 +177,9 @@ def main():
             keys = pygame.key.get_pressed()
 
             # player control
-            player.player_pos_x, player.player_pos_y = player_control(player.player_pos_x, player.player_pos_y, keys)
+            player.player_pos_x, player.player_pos_y, cam_pos_x, cam_pos_y = player_control(player.player_pos_x,
+                                                                                            player.player_pos_y, keys,
+                                                                                            cam_pos_x, cam_pos_y)
             player.change_position(player.player_pos_x, player.player_pos_y)
 
             walk_or_not = player.is_player_moved(cam_pos_x, cam_pos_y, prev_cam_pos_x, prev_cam_pos_y)
@@ -185,15 +188,15 @@ def main():
             is_enemy_collision(player, sprite_group)
 
             # update enemies positions and render new enemy if player kill one of them
-            enemy_update(sprite_group, prev_cam_pos_x, prev_cam_pos_y)
+            enemy_update(sprite_group, prev_cam_pos_x, prev_cam_pos_y, player.opponents_level, cam_pos_x, cam_pos_y)
 
             # check if player is in shop zone
-            store_zone(player, player.store)
+            store_zone(player, player.store, cam_pos_x, cam_pos_y)
 
-            draw_window(player, sprite_group, walk_or_not, revive_button, player.store, sound)
+            draw_window(player, sprite_group, walk_or_not, revive_button, player.store, sound, cam_pos_x, cam_pos_y)
 
             # check if player is in heal zone
-            heal_zone(player)
+            heal_zone(player, cam_pos_x, cam_pos_y)
 
             # update previous player position
             player.prev_player_pos_x = player.player_pos_x
@@ -202,7 +205,7 @@ def main():
             # update previous camera position
             prev_cam_pos_x, prev_cam_pos_y = cam_pos_x, cam_pos_y
         else:
-            draw_window(player, sprite_group, False, revive_button, player.store, sound)
+            draw_window(player, sprite_group, False, revive_button, player.store, sound, cam_pos_x, cam_pos_y)
 
     save_game(player)
     pygame.quit()

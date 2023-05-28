@@ -18,6 +18,7 @@ def save_game(player):
         "attack": player.stats.attack_power,
         "critical": player.stats.critical_damage_chance,
         "opponents_level": player.opponents_level,
+        "upgrade_points": player.stats.upgrade_points,
         'hp': player.hp,
         "exp": player.exp,
         "exp_to_next_level": player.exp_to_next_level,
@@ -40,6 +41,7 @@ def load_game():
             player.hp = game_state["hp"]
             player.exp = game_state["exp"]
             player.exp_to_next_level = game_state["exp_to_next_level"]
+            player.stats.upgrade_points = game_state["upgrade_points"]
             for each in game_state["items"]:
                 if each[0] == "gold":
                     player.equipment.add_gold(each[1])

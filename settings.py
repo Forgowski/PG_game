@@ -33,8 +33,6 @@ CHARACTER_WIDTH = 20
 
 CAM_MARGIN = 60
 CAM_SPEED = 10
-cam_pos_x = 0
-cam_pos_y = 0
 
 pygame.font.init()
 stats_font = font.SysFont('georgia', 18)
