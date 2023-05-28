@@ -1,5 +1,6 @@
 import random
 
+from settings import *
 from equipment import *
 from stats import Stats
 from button import Button
@@ -57,6 +58,7 @@ class Player(pygame.sprite.Sprite):
         self.stats = Stats(100, 50, 0, 0)
         self.hp = 100
         self.exp = 0
+        self.opponents_level = 1
 
         self.hp_bar = pygame.Rect(30, 10, 100, 15)
         self.hp_background_bar = pygame.Rect(30, 10, 100, 15)
@@ -181,11 +183,14 @@ class Player(pygame.sprite.Sprite):
         while self.is_alive and enemy_object.is_alive:
             if random.randint(1, 100) > enemy_object.stats.agility:
                 enemy_object.update_hp(self.stats.attack_power)
-                if random.randint(1, 100) > enemy_object.stats.critical_damage_chance:
+
+                if random.randint(1, 100) < self.stats.critical_damage_chance:
                     enemy_object.update_hp(self.stats.attack_power)
+
             if enemy_object.is_alive:
                 if random.randint(1, 100) > self.stats.agility:
                     self.update_hp(enemy_object.stats.attack_power)
+
                     if random.randint(1, 100) > self.stats.critical_damage_chance:
                         self.update_hp(enemy_object.stats.attack_power)
 
@@ -243,6 +248,7 @@ class Player(pygame.sprite.Sprite):
                                 for each in enemies:
                                     each.level_up()
                                 self.equipment.subtract_gold(i.price)
+                                self.opponents_level += 1
 
                             elif self.equipment.add_item(create_item(i.name)):
                                 self.stats.attack_power += i.attack_power

@@ -45,7 +45,6 @@ class Equipment:
 
             self.eq_rectangles.append(eq_rectangle)
             self.eq_background_rectangles.append(eq_background_rectangle)
-        self.add_gold(3000)
 
     def add_item(self, item):
         if len(self.items) == self.capacity:

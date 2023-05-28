@@ -7,6 +7,7 @@ from button import Button
 from sound import Sounds
 from fight import Fight
 from menu import Menu
+from save import save_game
 
 pygame.init()
 
@@ -143,18 +144,21 @@ def enemy_update(sprite_group, prev_cam_pos_x, prev_cam_pos_y):
 
 def main():
     clock = pygame.time.Clock()
-    run = True
 
-    player = Player("knight")
     sprite_group = pygame.sprite.Group()
     sound = Sounds()
 
     prev_cam_pos_x, prev_cam_pos_y = 0, 0
 
+    menu = Menu()
+    player = menu.main_loop()
+
+    if player == 0:
+        player = Player("knight")
+
     revive_button = Button(100, 25, 30, 50, player.revive, "revive button", BUTTON_PNG)
 
-    Menu()
-
+    run = True
     while run:
 
         clock.tick(FPS)
@@ -200,6 +204,7 @@ def main():
         else:
             draw_window(player, sprite_group, False, revive_button, player.store, sound)
 
+    save_game(player)
     pygame.quit()
 
 
