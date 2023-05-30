@@ -3,9 +3,10 @@ import easygui
 from player import Player
 from equipment import create_item
 from stats import Stats
+from boss import Boss
 
 
-def save_game(player):
+def save_game(player, boss):
     items_list = []
     for each in player.equipment.items:
         name, amount = each.name, each.amount

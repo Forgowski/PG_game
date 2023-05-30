@@ -102,6 +102,7 @@ class Equipment:
         self.items[i].amount -= 1
         self.check_items_amount()
 
+
 class Item:
     def __init__(self, name, sellable, usable, stackable, attack_power, price, description, use):
         self.name = name

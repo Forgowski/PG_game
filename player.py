@@ -124,7 +124,6 @@ class Player(pygame.sprite.Sprite):
             self.exp = 0
             self.exp_to_next_level *= 2
         self.exp += value
-        self.exp_bar.width = int(self.exp / self.exp_to_next_level * 100)
 
     def death_animation(self):
         if self.death_frame_counter % self.make_slower * 4 == 0:
@@ -140,6 +139,7 @@ class Player(pygame.sprite.Sprite):
         self.update_hp(0)
 
     def draw(self, walk_or_not, revive_button):
+        self.exp_bar.width = int(self.exp / self.exp_to_next_level * 100)
         self.update_hp_bar()
         WIN.blit(self.image, (self.rect.x, self.rect.y))
         WIN.blit(hp_text, (0, 10))

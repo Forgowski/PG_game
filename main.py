@@ -1,5 +1,6 @@
 import random
 
+from boss import Boss
 from settings import *
 from player import Player
 from enemy import Enemy
@@ -12,12 +13,14 @@ from save import save_game
 pygame.init()
 
 
-def draw_window(player, sprite_group, walk_or_not, revive_button, store, sound, cam_pos_x, cam_pos_y):
+def draw_window(player, sprite_group, walk_or_not, revive_button, store, sound, cam_pos_x, cam_pos_y, boss):
     WIN.blit(BACKGROUND, (cam_pos_x, cam_pos_y))
 
     sprite_group.draw(WIN)
 
     player.draw(walk_or_not, revive_button)
+
+    boss.draw()
 
     store.draw()
 
@@ -111,19 +114,19 @@ def heal_zone(player, cam_pos_x, cam_pos_y):
         player.heal(0.1)
 
 
-def store_zone(player, store, cam_pos_x, cam_pos_y):
+def store_zone(player, cam_pos_x, cam_pos_y):
     x, y = tile_cords(player.player_pos_x, player.player_pos_y, cam_pos_x, cam_pos_y)
     if x == 27 and y == 15:
-        store.is_visible = True
+        player.store.is_visible = True
     else:
-        store.is_visible = False
+        player.store.is_visible = False
 
 
 def draw_fight_scene():
     pass
 
 
-def enemy_update(sprite_group, prev_cam_pos_x, prev_cam_pos_y, opponents_lvl, cam_pos_x, cam_pos_y):
+def enemy_update(sprite_group, prev_cam_pos_x, prev_cam_pos_y, opponents_lvl, cam_pos_x, cam_pos_y, boss):
     while len(sprite_group) < OPPONENTS_NUMBER:
         enemy = Enemy(opponents_lvl)
         x, y = random.randint(0 + cam_pos_x, BACKGROUND_X - 200 + cam_pos_x), \
@@ -140,6 +143,8 @@ def enemy_update(sprite_group, prev_cam_pos_x, prev_cam_pos_y, opponents_lvl, ca
         for sprite in sprite_group:
             sprite.change_position(sprite.rect.x + cam_pos_x - prev_cam_pos_x,
                                    sprite.rect.y + cam_pos_y - prev_cam_pos_y)
+        boss.change_position(boss.rect.x + cam_pos_x - prev_cam_pos_x,
+                             boss.rect.y + cam_pos_y - prev_cam_pos_y)
 
 
 def main():
@@ -152,10 +157,11 @@ def main():
     prev_cam_pos_x, prev_cam_pos_y = 0, 0
 
     menu = Menu()
-    player = menu.main_loop()
+    is_loaded, player = menu.main_loop()
 
-    if player == 0:
+    if is_loaded == 0:
         player = Player("knight")
+        boss = Boss(1)
 
     revive_button = Button(100, 25, 30, 50, player.revive, "revive button", BUTTON_PNG)
 
@@ -182,18 +188,21 @@ def main():
                                                                                             cam_pos_x, cam_pos_y)
             player.change_position(player.player_pos_x, player.player_pos_y)
 
+            # check if player moved
             walk_or_not = player.is_player_moved(cam_pos_x, cam_pos_y, prev_cam_pos_x, prev_cam_pos_y)
 
             # check collision with enemies
             is_enemy_collision(player, sprite_group)
 
             # update enemies positions and render new enemy if player kill one of them
-            enemy_update(sprite_group, prev_cam_pos_x, prev_cam_pos_y, player.opponents_level, cam_pos_x, cam_pos_y)
+            enemy_update(sprite_group, prev_cam_pos_x, prev_cam_pos_y, player.opponents_level, cam_pos_x, cam_pos_y,
+                         boss)
 
             # check if player is in shop zone
-            store_zone(player, player.store, cam_pos_x, cam_pos_y)
+            store_zone(player, cam_pos_x, cam_pos_y)
 
-            draw_window(player, sprite_group, walk_or_not, revive_button, player.store, sound, cam_pos_x, cam_pos_y)
+            draw_window(player, sprite_group, walk_or_not, revive_button, player.store, sound, cam_pos_x, cam_pos_y,
+                        boss)
 
             # check if player is in heal zone
             heal_zone(player, cam_pos_x, cam_pos_y)
@@ -205,9 +214,9 @@ def main():
             # update previous camera position
             prev_cam_pos_x, prev_cam_pos_y = cam_pos_x, cam_pos_y
         else:
-            draw_window(player, sprite_group, False, revive_button, player.store, sound, cam_pos_x, cam_pos_y)
+            draw_window(player, sprite_group, False, revive_button, player.store, sound, cam_pos_x, cam_pos_y, boss)
 
-    save_game(player)
+    save_game(player, boss)
     pygame.quit()
 
 

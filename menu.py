@@ -32,11 +32,9 @@ class Menu:
         exit()
 
     def load_game(self):
-        try:
-            is_ok, player = load_game()
-            self.player = player
-        except:
-            pass
+
+        is_ok, player = load_game()
+        self.player = player
 
         if is_ok:
             self.is_open = False
@@ -71,6 +69,6 @@ class Menu:
             self.draw()
 
         if self.is_new_game:
-            return 0
+            return 0, 0
         else:
-            return self.player
+            return 1, self.player
