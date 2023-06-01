@@ -119,6 +119,7 @@ class Player(pygame.sprite.Sprite):
             self.stats.upgrade_points += 4
             self.stats.level_up()
             self.lvl += 1
+            self.exp -= self.exp_to_next_level
             self.exp_to_next_level *= 2
 
     def death_animation(self):
