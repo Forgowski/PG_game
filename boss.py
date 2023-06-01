@@ -8,8 +8,8 @@ class Boss(Enemy):
         super().__init__(1)
         self.is_alive = True
         self.stats = Stats(1000, 50, 30, 50)
-        self.hp = 100
-        self.exp_drop = 300
+        self.hp = 1000
+        self.exp_drop = 500
         self.gold_drop = 50
         self.info_bar_background = None
         self.enemies_to_boss = 50

@@ -1,5 +1,7 @@
 import random
 
+import pygame
+
 from boss import Boss
 from settings import *
 from player import Player
@@ -95,7 +97,7 @@ def check_map_collision(cord_x, cord_y, cam_pos_x, cam_pos_y):
     return map_array[x, y]
 
 
-def is_enemy_collision(player, sprites_group):
+def is_enemy_collision(player, sprites_group, boss):
     for sprite in sprites_group:
         if pygame.sprite.collide_rect(player, sprite):
             if not player.is_simulation_active:
@@ -105,6 +107,8 @@ def is_enemy_collision(player, sprites_group):
             if not sprite.is_alive:
                 sprites_group.remove(sprite)
             return True
+    if pygame.sprite.collide_rect(player, boss) and boss.is_alive:
+        Fight(player, boss)
     return False
 
 
@@ -120,10 +124,6 @@ def store_zone(player, cam_pos_x, cam_pos_y):
         player.store.is_visible = True
     else:
         player.store.is_visible = False
-
-
-def draw_fight_scene():
-    pass
 
 
 def enemy_update(sprite_group, prev_cam_pos_x, prev_cam_pos_y, opponents_lvl, cam_pos_x, cam_pos_y, boss):
@@ -192,7 +192,7 @@ def main():
             walk_or_not = player.is_player_moved(cam_pos_x, cam_pos_y, prev_cam_pos_x, prev_cam_pos_y)
 
             # check collision with enemies
-            is_enemy_collision(player, sprite_group)
+            is_enemy_collision(player, sprite_group, boss)
 
             # update enemies positions and render new enemy if player kill one of them
             enemy_update(sprite_group, prev_cam_pos_x, prev_cam_pos_y, player.opponents_level, cam_pos_x, cam_pos_y,
