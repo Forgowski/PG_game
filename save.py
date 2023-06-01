@@ -23,7 +23,10 @@ def save_game(player, boss):
         'hp': player.hp,
         "exp": player.exp,
         "exp_to_next_level": player.exp_to_next_level,
-        "items": items_list
+        "items": items_list,
+        "boss_lvl": boss.lvl,
+        "enemies_to_boss": boss.enemies_to_boss,
+        "boss_is_alive": boss.is_alive
     }
 
     with open('savegame.dat', 'wb') as file:
@@ -50,7 +53,11 @@ def load_game():
                     for i in range(each[1]):
                         player.equipment.add_item(create_item(each[0]))
 
-            return 1, player
+            boss = Boss(game_state["boss_lvl"])
+            boss.is_alive = game_state["boss_is_alive"]
+            boss.enemies_to_boss = game_state["enemies_to_boss"]
+
+            return 1, player, boss
     except:
         easygui.msgbox("You have not save any game", title="Error")
-        return 0, 0
+        return 0, 0, 0

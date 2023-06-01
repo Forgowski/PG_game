@@ -1,6 +1,4 @@
 import random
-
-from settings import *
 from equipment import *
 from stats import Stats
 from button import Button
@@ -55,7 +53,7 @@ class Player(pygame.sprite.Sprite):
         self.is_alive = True
         self.lvl = 1
 
-        self.stats = Stats(100, 500, 0, 0)
+        self.stats = Stats(100, 50, 0, 0)
         self.hp = 100
         self.exp = 0
         self.opponents_level = 1
@@ -123,8 +121,6 @@ class Player(pygame.sprite.Sprite):
             self.lvl += 1
             self.exp_to_next_level *= 2
 
-        self.exp_bar.width = int(self.exp / self.exp_to_next_level * 100)
-
     def death_animation(self):
         if self.death_frame_counter % self.make_slower * 4 == 0:
             self.image = self.death_images[self.current_death_image]
@@ -139,6 +135,7 @@ class Player(pygame.sprite.Sprite):
         self.update_hp(0)
 
     def draw(self, walk_or_not, revive_button):
+        self.exp_bar.width = int(self.exp / self.exp_to_next_level * 100)
         self.update_hp_bar()
         WIN.blit(self.image, (self.rect.x, self.rect.y))
         WIN.blit(hp_text, (0, 10))

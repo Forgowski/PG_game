@@ -24,7 +24,7 @@ class Menu:
         self.buttons_list = [self.new_game_button, self.load_game_button, self.exit_button]
 
         self.player = None
-        self.opponents_level = None
+        self.boss = None
         self.is_new_game = False
 
     @staticmethod
@@ -33,8 +33,9 @@ class Menu:
 
     def load_game(self):
 
-        is_ok, player = load_game()
+        is_ok, player, boss = load_game()
         self.player = player
+        self.boss = boss
 
         if is_ok:
             self.is_open = False
@@ -69,6 +70,6 @@ class Menu:
             self.draw()
 
         if self.is_new_game:
-            return 0, 0
+            return 0, 0, 0
         else:
-            return 1, self.player
+            return 1, self.player, self.boss

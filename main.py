@@ -158,7 +158,7 @@ def main():
     prev_cam_pos_x, prev_cam_pos_y = 0, 0
 
     menu = Menu()
-    is_loaded, player = menu.main_loop()
+    is_loaded, player, boss = menu.main_loop()
 
     if is_loaded == 0:
         player = Player("knight")
@@ -180,6 +180,7 @@ def main():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if not player.is_alive:
                     revive_button.is_pressed(mouse_position)
+
         if player.is_alive:
             keys = pygame.key.get_pressed()
 
