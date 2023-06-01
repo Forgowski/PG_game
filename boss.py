@@ -6,7 +6,7 @@ boss_png = pygame.transform.scale(pygame.image.load("assets/player/bos/boss.png"
 class Boss(Enemy):
     def __init__(self, level):
         super().__init__(1)
-        self.is_alive = True
+        self.is_alive = False
         self.stats = Stats(1000, 50, 30, 50)
         self.hp = 1000
         self.exp_drop = 500
@@ -42,15 +42,18 @@ class Boss(Enemy):
         WIN.blit(self.info_bar_text, self.info_bar_rectangle)
 
     def update_is_alive(self):
+        self.enemies_to_boss -= 1
+        if self.enemies_to_boss < 0:
+            self.enemies_to_boss = 0
         if self.enemies_to_boss == 0:
             self.is_alive = True
+            self.hp = self.stats.max_hp
 
     def boss_defeated(self):
-        self.is_alive = False
         self.enemies_to_boss = 50
+        self.level_up()
 
     def draw(self):
-        self.update_is_alive()
         self.draw_info_bar()
         if self.is_alive:
             WIN.blit(self.image, self.rect)

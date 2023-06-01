@@ -55,7 +55,7 @@ class Player(pygame.sprite.Sprite):
         self.is_alive = True
         self.lvl = 1
 
-        self.stats = Stats(100, 50, 0, 0)
+        self.stats = Stats(100, 500, 0, 0)
         self.hp = 100
         self.exp = 0
         self.opponents_level = 1

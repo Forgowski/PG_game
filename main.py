@@ -1,7 +1,5 @@
 import random
 
-import pygame
-
 from boss import Boss
 from settings import *
 from player import Player
@@ -105,10 +103,13 @@ def is_enemy_collision(player, sprites_group, boss):
             else:
                 player.fight_simulation(sprite)
             if not sprite.is_alive:
+                boss.update_is_alive()
                 sprites_group.remove(sprite)
             return True
     if pygame.sprite.collide_rect(player, boss) and boss.is_alive:
         Fight(player, boss)
+        if not boss.is_alive:
+            boss.boss_defeated()
     return False
 
 
