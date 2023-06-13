@@ -2,7 +2,7 @@ import pygame
 import numpy as np
 from pygame import font
 
-WIDTH, HEIGHT, = 1800, 1000
+WIDTH, HEIGHT, = 1300, 600
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Game")
 FPS = 60
@@ -31,8 +31,8 @@ OPPONENTS_NUMBER = 15
 CHARACTER_HEIGHT = 30
 CHARACTER_WIDTH = 20
 
-CAM_MARGIN = 60
-CAM_SPEED = 10
+CAM_MARGIN = 100
+CAM_SPEED = 5
 
 pygame.font.init()
 stats_font = font.SysFont('georgia', 18)

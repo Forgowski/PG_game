@@ -32,19 +32,24 @@ def draw_window(player, sprite_group, walk_or_not, revive_button, store, sound, 
 
 
 def camera_moves(direction, cam_pos_x, cam_pos_y):
+    moved = False
     if direction == "up" and cam_pos_y + CAM_SPEED <= 0:
         cam_pos_y += CAM_SPEED
+        moved = True
 
     if direction == "down" and cam_pos_y - CAM_SPEED - HEIGHT >= -BACKGROUND_SIZE[1]:
         cam_pos_y -= CAM_SPEED
+        moved = True
 
     if direction == "right" and cam_pos_x - CAM_SPEED - WIDTH >= -BACKGROUND_SIZE[0]:
         cam_pos_x -= CAM_SPEED
+        moved = True
 
     if direction == "left" and cam_pos_x + CAM_SPEED <= 0:
         cam_pos_x += CAM_SPEED
+        moved = True
 
-    return cam_pos_x, cam_pos_y
+    return cam_pos_x, cam_pos_y, moved
 
 
 def player_control(player_pos_x, player_pos_y, keys, cam_pos_x, cam_pos_y):
@@ -52,34 +57,38 @@ def player_control(player_pos_x, player_pos_y, keys, cam_pos_x, cam_pos_y):
         if not check_map_collision(player_pos_x, player_pos_y - CAM_SPEED, cam_pos_x, cam_pos_y):
             player_pos_y -= CAM_SPEED
 
-    if player_pos_y < CAM_MARGIN and keys[pygame.K_UP]:
-        if not check_map_collision(player_pos_x, player_pos_y - CAM_SPEED, cam_pos_x, cam_pos_y):
-            cam_pos_x, cam_pos_y = camera_moves("up", cam_pos_x, cam_pos_y)
-
     if keys[pygame.K_DOWN] and player_pos_y + CAM_SPEED + CHARACTER_HEIGHT <= HEIGHT:
         if not check_map_collision(player_pos_x, player_pos_y + CAM_SPEED, cam_pos_x, cam_pos_y):
             player_pos_y += CAM_SPEED
-
-    if player_pos_y > HEIGHT - CAM_MARGIN and keys[pygame.K_DOWN]:
-        if not check_map_collision(player_pos_x, player_pos_y + CAM_SPEED, cam_pos_x, cam_pos_y):
-            cam_pos_x, cam_pos_y = camera_moves("down", cam_pos_x, cam_pos_y)
 
     if keys[pygame.K_RIGHT] and player_pos_x + CAM_SPEED + CHARACTER_WIDTH <= WIDTH:
         if not check_map_collision(player_pos_x + CAM_SPEED, player_pos_y, cam_pos_x, cam_pos_y):
             player_pos_x += CAM_SPEED
 
-    if player_pos_x > WIDTH - CAM_MARGIN and keys[pygame.K_RIGHT]:
-        if not check_map_collision(player_pos_x + CAM_SPEED, player_pos_y, cam_pos_x, cam_pos_y):
-            cam_pos_x, cam_pos_y = camera_moves("right", cam_pos_x, cam_pos_y)
-
     if keys[pygame.K_LEFT] and player_pos_x - CAM_SPEED >= 0:
         if not check_map_collision(player_pos_x - CAM_SPEED, player_pos_y, cam_pos_x, cam_pos_y):
             player_pos_x -= CAM_SPEED
 
+    if player_pos_y < CAM_MARGIN and keys[pygame.K_UP]:
+        if not check_map_collision(player_pos_x, player_pos_y - CAM_SPEED, cam_pos_x, cam_pos_y):
+            cam_pos_x, cam_pos_y, moved = camera_moves("up", cam_pos_x, cam_pos_y)
+            if moved:
+                player_pos_y += CAM_SPEED
+    if player_pos_y > HEIGHT - CAM_MARGIN and keys[pygame.K_DOWN]:
+        if not check_map_collision(player_pos_x, player_pos_y + CAM_SPEED, cam_pos_x, cam_pos_y):
+            cam_pos_x, cam_pos_y, moved = camera_moves("down", cam_pos_x, cam_pos_y)
+            if moved:
+                player_pos_y -= CAM_SPEED
+    if player_pos_x > WIDTH - CAM_MARGIN and keys[pygame.K_RIGHT]:
+        if not check_map_collision(player_pos_x + CAM_SPEED, player_pos_y, cam_pos_x, cam_pos_y):
+            cam_pos_x, cam_pos_y, moved = camera_moves("right", cam_pos_x, cam_pos_y)
+            if moved:
+                player_pos_x -= CAM_SPEED
     if player_pos_x < CAM_MARGIN and keys[pygame.K_LEFT]:
         if not check_map_collision(player_pos_x - CAM_SPEED, player_pos_y, cam_pos_x, cam_pos_y):
-            cam_pos_x, cam_pos_y = camera_moves("left", cam_pos_x, cam_pos_y)
-
+            cam_pos_x, cam_pos_y, moved = camera_moves("left", cam_pos_x, cam_pos_y)
+            if moved:
+                player_pos_x += CAM_SPEED
     return player_pos_x, player_pos_y, cam_pos_x, cam_pos_y
 
 
