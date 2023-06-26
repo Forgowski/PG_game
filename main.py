@@ -170,7 +170,7 @@ def main():
     is_loaded, player, boss = menu.main_loop()
 
     if is_loaded == 0:
-        player = Player("knight")
+        player = Player(player)
         boss = Boss(1)
 
     revive_button = Button(100, 25, 30, 50, player.revive, "revive button", BUTTON_PNG)

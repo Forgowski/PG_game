@@ -149,3 +149,4 @@ class Fight:
                     self.enemy.heal()
                 self.is_fighting = False
             self.draw()
+        pygame.time.delay(2000)
