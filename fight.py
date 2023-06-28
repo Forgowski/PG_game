@@ -42,10 +42,8 @@ class Fight:
 
     def draw(self):
         WIN.blit(FIGHT_BACKGROUND, (0, 0))
-        WIN.blit(self.attack_button.image, self.attack_button.rectangle.topleft)
-        WIN.blit(self.attack_button.rectangle_text, self.attack_button.rectangle_text_position)
-        WIN.blit(self.hp_potion_button.image, self.hp_potion_button.rectangle.topleft)
-        WIN.blit(self.hp_potion_button.rectangle_text, self.hp_potion_button.rectangle_text_position)
+        self.attack_button.draw()
+        self.hp_potion_button.draw()
         WIN.blit(self.available_potions_text, (self.hp_potion_button.rectangle.topright[0] + 10, HEIGHT - 42))
         WIN.blit(self.player.image, self.player_position)
         WIN.blit(self.enemy.image, self.enemy_position)

@@ -73,18 +73,14 @@ class Menu:
                     if button.is_pressed(pygame.mouse.get_pos()):
                         button.onclick()
 
-
     def draw(self):
         WIN.fill(BLACK)
         if self.is_new_game:
-            WIN.blit(self.wizard_button.image, self.wizard_button.rectangle.topleft)
-            WIN.blit(self.wizard_button.rectangle_text, self.wizard_button.rectangle_text_position)
-            WIN.blit(self.knight_button.image, self.knight_button.rectangle.topleft)
-            WIN.blit(self.knight_button.rectangle_text, self.knight_button.rectangle_text_position)
+            self.wizard_button.draw()
+            self.knight_button.draw()
         else:
             for button in self.buttons_list:
-                WIN.blit(button.image, button.rectangle.topleft)
-                WIN.blit(button.rectangle_text, button.rectangle_text_position)
+                button.draw()
         pygame.display.update()
 
     def main_loop(self):

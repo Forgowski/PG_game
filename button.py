@@ -25,3 +25,7 @@ class Button:
                 self.rectangle_text.get_height() / 2)) + self.rectangle.y
 
         self.rectangle_text_position = (self.text_position_x, self.text_position_y)
+
+    def draw(self):
+        WIN.blit(self.image, self.rectangle.topleft)
+        WIN.blit(self.rectangle_text, self.rectangle_text_position)

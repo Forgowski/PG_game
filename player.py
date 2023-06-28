@@ -153,8 +153,7 @@ class Player(pygame.sprite.Sprite):
                 self.image = self.images[3]
 
             else:
-                WIN.blit(revive_button.image, revive_button.rectangle.topleft)
-                WIN.blit(revive_button.rectangle_text, revive_button.rectangle_text_position)
+                revive_button.draw()
                 self.death_animation()
 
         if self.equipment.is_visible:
