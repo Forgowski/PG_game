@@ -48,7 +48,7 @@ class Player(pygame.sprite.Sprite):
 
         self.player_pos_x, self.player_pos_y = 50, 50
 
-        self.prev_player_pos_x, self.prev_player_pos_y = 0, 0
+        self.prev_player_pos_x, self.prev_player_pos_y = 50, 50
 
         self.is_alive = True
         self.lvl = 1
@@ -80,8 +80,8 @@ class Player(pygame.sprite.Sprite):
         self.rect.y = 0
 
         self.make_slower = 6
-        self.counter = 0
-        self.death_frame_counter = 0
+        self.counter = 1
+        self.death_frame_counter = 1
 
         self.equipment = Equipment()
 
@@ -91,7 +91,7 @@ class Player(pygame.sprite.Sprite):
             if self.current_image >= len(self.images):
                 self.current_image = 0
             self.image = self.images[self.current_image]
-            self.counter = 0
+            self.counter = 1
         self.counter += 1
 
     def change_position(self, x, y):
@@ -134,6 +134,8 @@ class Player(pygame.sprite.Sprite):
         self.is_alive = True
         self.hp = 1
         self.update_hp(0)
+        self.death_frame_counter = 1
+        self.current_death_image = 0
 
     def draw(self, walk_or_not, revive_button):
         self.exp_bar.width = int(self.exp / self.exp_to_next_level * 100)
