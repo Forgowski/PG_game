@@ -11,23 +11,18 @@ class Menu:
 
         self.new_game_button = Button(300, 100, WIDTH / 2 - 150, HEIGHT / 2 - 200, self.new_game, None, BUTTON_MENU_PNG)
         self.new_game_button.rectangle_text = menu_bold_font.render("NEW GAME", True, (255, 255, 255))
-        self.new_game_button.set_text_position()
 
         self.load_game_button = Button(300, 100, WIDTH / 2 - 150, HEIGHT / 2, self.load_game, None, BUTTON_MENU_PNG)
         self.load_game_button.rectangle_text = menu_bold_font.render("LOAD GAME", True, (255, 255, 255))
-        self.load_game_button.set_text_position()
 
         self.exit_button = Button(300, 100, WIDTH / 2 - 150, HEIGHT / 2 + 200, self.exit, None, BUTTON_MENU_PNG)
         self.exit_button.rectangle_text = menu_bold_font.render("EXIT", True, (255, 255, 255))
-        self.exit_button.set_text_position()
 
         self.wizard_button = Button(300, 100, WIDTH / 2 - 150, HEIGHT / 2, self.wizard, None, BUTTON_MENU_PNG)
         self.wizard_button.rectangle_text = menu_bold_font.render("Wizard", True, (255, 255, 255))
-        self.wizard_button.set_text_position()
 
         self.knight_button = Button(300, 100, WIDTH / 2 - 150, HEIGHT / 2 - 200, self.knight, None, BUTTON_MENU_PNG)
         self.knight_button.rectangle_text = menu_bold_font.render("Knight", True, (255, 255, 255))
-        self.knight_button.set_text_position()
 
         self.buttons_list = [self.new_game_button, self.load_game_button, self.exit_button]
 
