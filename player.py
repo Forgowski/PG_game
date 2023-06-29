@@ -123,7 +123,7 @@ class Player(pygame.sprite.Sprite):
             self.exp_to_next_level *= 2
 
     def death_animation(self):
-        if self.death_frame_counter % self.make_slower * 4 == 0:
+        if self.death_frame_counter % self.make_slower == 0:
             self.image = self.death_images[self.current_death_image]
             if self.current_death_image < len(self.death_images) - 1:
                 self.current_death_image += 1
